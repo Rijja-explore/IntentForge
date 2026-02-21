@@ -10,7 +10,7 @@ from datetime import datetime
 import time
 
 from app.config import settings
-from app.routes import health
+from app.routes import health, wallet
 from app.utils.logger import get_logger
 from app.utils.exceptions import IntentForgeException
 
@@ -142,6 +142,7 @@ async def shutdown_event():
 
 # Include Routers
 app.include_router(health.router, prefix="", tags=["Health"])
+app.include_router(wallet.router, prefix=settings.API_V1_PREFIX, tags=["Wallet Management"])
 
 # Root Endpoint
 @app.get("/", include_in_schema=False)

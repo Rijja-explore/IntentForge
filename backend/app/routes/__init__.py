@@ -2,4 +2,6 @@
 API Routes for IntentForge Backend
 """
 
-__all__ = []
+from . import health, wallet
+
+__all__ = ["health", "wallet"]
