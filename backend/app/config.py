@@ -4,7 +4,8 @@ Centralized configuration with environment variable support
 """
 
 from pydantic_settings import BaseSettings
-from typing import Optional
+from pydantic import field_validator
+from typing import Optional, Union
 import os
 
 
@@ -24,11 +25,18 @@ class Settings(BaseSettings):
     PORT: int = 8000
     
     # CORS Configuration
-    CORS_ORIGINS: list = [
+    CORS_ORIGINS: Union[list, str] = [
         "http://localhost:3000",
         "http://localhost:3001",
         "http://127.0.0.1:3000",
     ]
+    
+    @field_validator('CORS_ORIGINS', mode='before')
+    @classmethod
+    def parse_cors_origins(cls, v):
+        if isinstance(v, str):
+            return [origin.strip() for origin in v.split(',')]
+        return v
     
     # Security
     SECRET_KEY: str = "your-secret-key-change-in-production"

@@ -8,6 +8,7 @@ from uuid import UUID
 from typing import List, Optional
 
 from app.models.policy import Policy, PolicyCreate, PolicyResponse
+from app.models.response import APIResponse
 from app.services.policy_service import policy_service
 from app.services.wallet_service import wallet_service
 from app.utils.logger import get_logger
@@ -86,6 +87,82 @@ async def create_policy(policy_data: PolicyCreate) -> PolicyResponse:
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Failed to create policy: {str(e)}"
+        )
+
+
+@router.get(
+    "/conflicts",
+    response_model=APIResponse[dict],
+    status_code=status.HTTP_200_OK,
+    summary="Detect Policy Conflicts",
+    description="""
+    **Policy Conflict Detection Engine**
+    
+    Analyzes all active policies to detect contradictory or impossible rules.
+    
+    ### Conflict Types Detected:
+    
+    1. **Contradictory Category Restrictions**
+       - Policies with non-overlapping allowed categories
+       - Creates impossible conditions for transactions
+    
+    2. **Impossible Amount Limits**
+       - Conflicting max_amount across policies
+       - Per-transaction cap exceeding total limit
+    
+    3. **Contradictory GeoFence Restrictions**
+       - Policies with non-overlapping geographic regions
+       - No location can satisfy all policies
+    
+    4. **Merchant Whitelist vs Blacklist**
+       - Merchant appears in both whitelist and blacklist
+       - Impossible state for merchant transactions
+    
+    5. **Time and Expiry Conflicts**
+       - Policies with conflicting expiry windows
+       - Cascade effects from policy expiration
+    
+    ### Severity Levels:
+    - **CRITICAL**: Impossible conditions, no transaction can pass
+    - **HIGH**: Contradictory rules causing unpredictable behavior
+    - **MEDIUM**: Potentially conflicting rules
+    - **LOW**: Warnings about policy configuration
+    
+    ### Response Includes:
+    - Total conflict count
+    - Detailed conflict descriptions
+    - Policy IDs and names involved
+    - Severity assessment
+    - Critical conflict flag
+    """
+)
+async def detect_policy_conflicts() -> APIResponse[dict]:
+    """
+    Detect conflicts across all active policies
+    
+    Returns:
+        APIResponse with conflict analysis
+    """
+    try:
+        logger.info("Detecting policy conflicts across all active policies")
+        
+        conflict_analysis = await policy_service.detect_all_conflicts()
+        
+        logger.info(
+            f"Conflict detection complete: {conflict_analysis['total_conflicts']} conflicts found"
+        )
+        
+        return APIResponse(
+            success=True,
+            message=f"Found {conflict_analysis['total_conflicts']} policy conflict(s)",
+            data=conflict_analysis
+        )
+        
+    except Exception as e:
+        logger.error(f"Conflict detection failed: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Conflict detection failed: {str(e)}"
         )
 
 
@@ -313,3 +390,12 @@ async def validate_policy_schema(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=str(e.message)
         )
+    except Exception as e:
+        logger.error(f"Policy validation failed: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Policy validation failed: {str(e)}"
+        )
+
+
+# Conflicts endpoint moved earlier in file to prevent route matching conflicts with /{policy_id}

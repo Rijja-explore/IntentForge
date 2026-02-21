@@ -138,7 +138,7 @@ class PolicyService:
     async def _detect_conflicts(self, policy: Policy) -> List[str]:
         """
         Detect conflicts with existing policies
-        Placeholder for conflict detection logic
+        Comprehensive conflict detection for contradictory or impossible rules
         
         Args:
             policy: Policy to check
@@ -146,15 +146,145 @@ class PolicyService:
         Returns:
             List of conflict descriptions
         """
-        # Simplified conflict detection
         conflicts = []
         
-        # Example: Check for contradictory category restrictions
-        if policy.policy_type.value == "category_restriction":
-            # Future implementation will check for logical conflicts
-            pass
+        # Get all existing policies
+        existing_policies = list(self.policies.values())
+        
+        for existing in existing_policies:
+            if not existing.is_active:
+                continue
+            
+            # 1. CONTRADICTORY CATEGORY RESTRICTIONS
+            if (policy.policy_type.value == "category_restriction" and 
+                existing.policy_type.value == "category_restriction"):
+                
+                new_categories = set(policy.rules.allowed_categories or [])
+                existing_categories = set(existing.rules.allowed_categories or [])
+                
+                # Check for complete contradiction (no overlap)
+                if new_categories and existing_categories:
+                    if new_categories.isdisjoint(existing_categories):
+                        conflicts.append(
+                            f"CONFLICT: Policy '{policy.name}' allows categories {new_categories} "
+                            f"which have NO overlap with existing policy '{existing.name}' "
+                            f"categories {existing_categories}. "
+                            f"This creates impossible conditions - no transaction can satisfy both policies."
+                        )
+            
+            # 2. IMPOSSIBLE AMOUNT LIMITS
+            if policy.rules.max_amount and existing.rules.max_amount:
+                # Check if both policies have max_amount and one is more restrictive
+                if policy.rules.max_amount < existing.rules.max_amount * 0.1:
+                    conflicts.append(
+                        f"CONFLICT: Policy '{policy.name}' max_amount ({policy.rules.max_amount}) "
+                        f"is significantly lower than '{existing.name}' ({existing.rules.max_amount}). "
+                        f"Consider consolidating limits."
+                    )
+            
+            # 3. CONTRADICTORY PER-TRANSACTION CAPS
+            if policy.rules.per_transaction_cap and existing.rules.max_amount:
+                if policy.rules.per_transaction_cap > existing.rules.max_amount:
+                    conflicts.append(
+                        f"CONFLICT: Policy '{policy.name}' per_transaction_cap "
+                        f"({policy.rules.per_transaction_cap}) exceeds "
+                        f"existing policy '{existing.name}' max_amount ({existing.rules.max_amount}). "
+                        f"Per-transaction cap should not exceed total spending limit."
+                    )
+            
+            # 4. CONTRADICTORY GEOFENCE RESTRICTIONS
+            if (policy.rules.geo_fence and existing.rules.geo_fence):
+                new_geos = set(policy.rules.geo_fence)
+                existing_geos = set(existing.rules.geo_fence)
+                
+                # Check for no overlap
+                if new_geos.isdisjoint(existing_geos):
+                    conflicts.append(
+                        f"CONFLICT: Policy '{policy.name}' geo_fence {new_geos} "
+                        f"has NO overlap with existing policy '{existing.name}' "
+                        f"geo_fence {existing_geos}. "
+                        f"No location can satisfy both policies."
+                    )
+            
+            # 5. MERCHANT WHITELIST vs BLACKLIST
+            if policy.rules.merchant_whitelist and existing.rules.merchant_blacklist:
+                whitelist = set(policy.rules.merchant_whitelist)
+                blacklist = set(existing.rules.merchant_blacklist)
+                
+                overlap = whitelist.intersection(blacklist)
+                if overlap:
+                    conflicts.append(
+                        f"CONFLICT: Policy '{policy.name}' whitelists merchants {overlap} "
+                        f"but existing policy '{existing.name}' blacklists them. "
+                        f"These merchants are in impossible state (both allowed and blocked)."
+                    )
+            
+            # 6. IMPOSSIBLE TIME + EXPIRY CONFLICTS
+            if policy.rules.expiry and existing.rules.expiry:
+                # Check if expiries are very close (within 1 day) but different
+                time_diff = abs((policy.rules.expiry - existing.rules.expiry).total_seconds())
+                if 0 < time_diff < 86400:  # Less than 1 day difference
+                    conflicts.append(
+                        f"WARNING: Policy '{policy.name}' and '{existing.name}' "
+                        f"have expiries within 24 hours of each other. "
+                        f"This may cause unexpected policy cascade effects."
+                    )
         
         return conflicts
+    
+    @log_execution_time(logger)
+    async def detect_all_conflicts(self) -> dict:
+        """
+        Detect all conflicts across all active policies
+        
+        Returns:
+            Dictionary with conflict analysis
+        """
+        all_conflicts = []
+        policy_list = list(self.policies.values())
+        
+        # Check each policy against all others
+        for i, policy_a in enumerate(policy_list):
+            if not policy_a.is_active:
+                continue
+            
+            for policy_b in policy_list[i+1:]:
+                if not policy_b.is_active:
+                    continue
+                
+                # Create temporary policy to use conflict detection
+                conflicts = await self._detect_conflicts(policy_a)
+                
+                if conflicts:
+                    for conflict in conflicts:
+                        if policy_b.name in conflict:
+                            all_conflicts.append({
+                                "policy_a": str(policy_a.policy_id),
+                                "policy_a_name": policy_a.name,
+                                "policy_b": str(policy_b.policy_id),
+                                "policy_b_name": policy_b.name,
+                                "conflict_description": conflict,
+                                "severity": self._assess_conflict_severity(conflict)
+                            })
+        
+        return {
+            "total_conflicts": len(all_conflicts),
+            "conflicts": all_conflicts,
+            "has_critical_conflicts": any(
+                c["severity"] == "CRITICAL" for c in all_conflicts
+            )
+        }
+    
+    def _assess_conflict_severity(self, conflict_description: str) -> str:
+        """Assess conflict severity based on description"""
+        if "impossible" in conflict_description.lower():
+            return "CRITICAL"
+        elif "contradictory" in conflict_description.lower():
+            return "HIGH"
+        elif "warning" in conflict_description.lower():
+            return "LOW"
+        else:
+            return "MEDIUM"
 
 
 # Global service instance

@@ -10,7 +10,7 @@ from datetime import datetime
 import time
 
 from app.config import settings
-from app.routes import health, wallet, policy, transaction
+from app.routes import health, wallet, policy, transaction, clawback
 from app.utils.logger import get_logger
 from app.utils.exceptions import IntentForgeException
 
@@ -145,6 +145,7 @@ app.include_router(health.router, prefix="", tags=["Health"])
 app.include_router(wallet.router, prefix=settings.API_V1_PREFIX, tags=["Wallet Management"])
 app.include_router(policy.router, prefix=settings.API_V1_PREFIX, tags=["Policy Management"])
 app.include_router(transaction.router, prefix=settings.API_V1_PREFIX, tags=["Transaction Validation"])
+app.include_router(clawback.router, prefix=settings.API_V1_PREFIX, tags=["Clawback & Recovery"])
 
 # Root Endpoint
 @app.get("/", include_in_schema=False)
