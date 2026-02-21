@@ -38,18 +38,41 @@ class PolicyService:
         Returns:
             PolicyResponse with created policy details
         """
+        # Set expiry from rules if provided
+        expires_at = policy_data.rules.expiry if policy_data.rules.expiry else None
+        
         policy = Policy(
             name=policy_data.name,
             policy_type=policy_data.policy_type,
             rules=policy_data.rules,
             description=policy_data.description,
             is_active=True,
-            priority=100,
+            priority=policy_data.priority,
+            expires_at=expires_at,
             created_at=datetime.utcnow()
         )
         
-        # Check for conflicts (placeholder - will be implemented in conflict service)
+        # Validate schema consistency
+        schema_errors = policy.validate_schema()
+        if schema_errors:
+            from app.utils.exceptions import ValidationException
+            raise ValidationException(
+                f"Policy schema validation failed: {', '.join(schema_errors)}",
+                details={"errors": schema_errors}
+            )
+        
+        # Check for conflicts
         conflicts = await self._detect_conflicts(policy)
+        
+        # Attach to wallet if specified
+        if policy_data.wallet_id:
+            policy.attached_wallets.append(policy_data.wallet_id)
+            # Also update wallet service
+            from app.services.wallet_service import wallet_service
+            try:
+                await wallet_service.attach_policy(policy_data.wallet_id, policy.policy_id)
+            except Exception as e:
+                logger.warning(f"Failed to attach policy to wallet: {e}")
         
         self.policies[policy.policy_id] = policy
         
