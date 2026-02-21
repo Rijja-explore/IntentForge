@@ -2,6 +2,6 @@
 API Routes for IntentForge Backend
 """
 
-from . import health, wallet, policy, transaction, clawback
+from . import health, wallet, policy, transaction, clawback, ai, metrics
 
-__all__ = ["health", "wallet", "policy"]
+__all__ = ["health", "wallet", "policy", "transaction", "clawback", "ai", "metrics"]

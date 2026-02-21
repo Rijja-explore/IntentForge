@@ -16,6 +16,7 @@ from app.models.transaction import (
 from app.models.policy import Policy
 from app.utils.logger import get_logger, log_execution_time
 from app.utils.exceptions import ValidationException
+from app.services.explanation_generator_service import explanation_generator
 
 logger = get_logger(__name__)
 
@@ -23,14 +24,15 @@ logger = get_logger(__name__)
 class ValidationService:
     """
     Transaction Validation Service
-    Deterministic rule-based validation engine
+    Deterministic rule-based validation engine with AI explanations
     """
     
     def __init__(self):
         """
         Initialize validation service
         """
-        logger.info("ValidationService initialized")
+        self.explanation_generator = explanation_generator
+        logger.info("ValidationService initialized with AI explanations")
     
     @log_execution_time(logger)
     async def validate_transaction(
@@ -39,14 +41,14 @@ class ValidationService:
         policies: List[Policy]
     ) -> ValidationResult:
         """
-        Validate transaction against active policies
+        Validate transaction against active policies with AI-generated explanations
         
         Args:
             transaction: Transaction to validate
             policies: List of applicable policies
             
         Returns:
-            ValidationResult with decision and reasoning
+            ValidationResult with decision, reasoning, and AI explanation
         """
         start_time = time.perf_counter()
         
@@ -70,13 +72,40 @@ class ValidationService:
                 violations.append(violation)
                 status = TransactionStatus.BLOCKED
         
-        # Generate reasoning
-        reasoning = self._generate_reasoning(
+        # Generate basic reasoning
+        basic_reasoning = self._generate_reasoning(
             transaction, 
             status, 
             violations, 
             len(policies_evaluated)
         )
+        
+        # Generate AI explanation
+        transaction_dict = {
+            "amount": transaction.amount,
+            "category": transaction.category,
+            "merchant": transaction.merchant,
+            "location": transaction.location
+        }
+        
+        ai_explanation = self.explanation_generator.generate_explanation(
+            validation_result=ValidationResult(
+                transaction_id=transaction.transaction_id,
+                status=status,
+                decision=status.value,
+                violations=violations,
+                policies_evaluated=policies_evaluated,
+                reasoning=basic_reasoning,
+                confidence_score=0.95,
+                processing_time_ms=0.0,
+                requires_clawback=False
+            ),
+            transaction=transaction_dict,
+            evaluated_policies=sorted_policies
+        )
+        
+        # Combine basic reasoning with AI explanation
+        full_reasoning = f"{basic_reasoning}\n\n--- AI Detailed Explanation ---\n{ai_explanation}"
         
         # Calculate confidence (simplified heuristic)
         confidence = 0.98 if not violations else 0.95
@@ -89,7 +118,7 @@ class ValidationService:
             decision=status.value,
             violations=violations,
             policies_evaluated=policies_evaluated,
-            reasoning=reasoning,
+            reasoning=full_reasoning,
             confidence_score=confidence,
             processing_time_ms=processing_time,
             requires_clawback=False
@@ -97,7 +126,7 @@ class ValidationService:
         
         logger.info(
             f"Transaction {transaction.transaction_id} validated: "
-            f"{status.value} in {processing_time:.2f}ms"
+            f"{status.value} in {processing_time:.2f}ms with AI explanation"
         )
         
         return result
