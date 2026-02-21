@@ -10,6 +10,8 @@ from datetime import datetime
 
 from app.services.compliance_ml_service import compliance_ml_service
 from app.services.wallet_service import wallet_service
+from app.services.stress_test_service import stress_test_service
+from app.services.blockchain_audit_service import blockchain_audit_service
 from app.models.response import APIResponse
 from app.utils.logger import get_logger
 from app.utils.exceptions import WalletNotFoundException
@@ -297,6 +299,143 @@ async def metrics_health_check() -> APIResponse[dict]:
         message="Metrics service is operational",
         data=status_data
     )
+
+
+@router.post(
+    "/stress-test",
+    response_model=APIResponse[dict],
+    status_code=status.HTTP_200_OK,
+    summary="Run Stress Test",
+    description="""
+    **Performance Stress Testing**
+    
+    Simulates high-volume transaction loads to measure validation pipeline performance.
+    
+    ### Test Parameters:
+    - `wallet_id`: Wallet to test against (required)
+    - `num_transactions`: Number of transactions to simulate (default: 100)
+    - `concurrent`: Run tests concurrently vs sequentially (default: false)
+    
+    ### Metrics Returned:
+    1. **Test Summary**
+       - Total transactions attempted
+       - Success/failure rates
+       - Validation results (approved/blocked)
+    
+    2. **Performance Metrics**
+       - Total duration
+       - Throughput (TPS - Transactions Per Second)
+       - Average, median, min, max latency
+       - Standard deviation
+    
+    3. **Latency Distribution**
+       - P50 (median)
+       - P95 (95th percentile)
+       - P99 (99th percentile)
+    
+    4. **Target Compliance**
+       - Sub-100ms target verification
+       - Individual metric compliance checks
+    
+    ### Use Cases:
+    - Performance benchmarking
+    - Capacity planning
+    - SLA verification
+    - Regression testing
+    - Load testing before production deployment
+    """
+)
+async def run_stress_test(
+    wallet_id: UUID = Query(..., description="Wallet ID to test"),
+    num_transactions: int = Query(100, ge=1, le=1000, description="Number of transactions"),
+    concurrent: bool = Query(False, description="Run tests concurrently")
+) -> APIResponse[dict]:
+    """
+    Run stress test on validation pipeline
+    
+    Args:
+        wallet_id: Wallet to test against
+        num_transactions: Number of transactions to simulate
+        concurrent: Whether to run concurrently
+        
+    Returns:
+        APIResponse with performance metrics
+    """
+    try:
+        logger.info(f"Starting stress test: wallet={wallet_id}, n={num_transactions}, concurrent={concurrent}")
+        
+        # Validate wallet exists
+        try:
+            await wallet_service.get_wallet(wallet_id)
+        except WalletNotFoundException:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND,
+                detail=f"Wallet not found: {wallet_id}"
+            )
+        
+        # Run stress test
+        metrics = await stress_test_service.run_stress_test(
+            wallet_id=wallet_id,
+            num_transactions=num_transactions,
+            concurrent=concurrent
+        )
+        
+        return APIResponse(
+            success=True,
+            message=f"Stress test completed: {metrics['performance_metrics']['throughput_tps']:.2f} TPS",
+            data=metrics
+        )
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"Stress test failed: {str(e)}", exc_info=True)
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Stress test failed: {str(e)}"
+        )
+
+
+@router.get(
+    "/blockchain/audit-log",
+    response_model=APIResponse[dict],
+    status_code=status.HTTP_200_OK,
+    summary="Get Blockchain Audit Log",
+    description="Retrieve recent blockchain audit log entries"
+)
+async def get_blockchain_audit_log(
+    limit: int = Query(50, ge=1, le=500, description="Maximum entries to return"),
+    event_type: Optional[str] = Query(None, description="Filter by event type")
+) -> APIResponse[dict]:
+    """
+    Get blockchain audit log entries
+    
+    Args:
+        limit: Maximum entries to return
+        event_type: Optional filter by event type
+        
+    Returns:
+        APIResponse with audit log entries
+    """
+    try:
+        logs = blockchain_audit_service.get_audit_log(limit=limit, event_type=event_type)
+        
+        return APIResponse(
+            success=True,
+            message=f"Retrieved {len(logs)} audit log entries",
+            data={
+                "entries": logs,
+                "count": len(logs),
+                "event_type_filter": event_type
+            }
+        )
+        
+    except Exception as e:
+        logger.error(f"Failed to retrieve audit log: {str(e)}")
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Failed to retrieve audit log: {str(e)}"
+        )
 
 
 def _generate_risk_recommendations(compliance_data: dict) -> list:

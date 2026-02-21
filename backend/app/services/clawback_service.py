@@ -18,6 +18,7 @@ from app.models.clawback import (
 from app.models.transaction import Transaction
 from app.utils.logger import get_logger, log_execution_time
 from app.utils.exceptions import ValidationException
+from app.services.blockchain_audit_service import blockchain_audit_service
 
 logger = get_logger(__name__)
 
@@ -119,6 +120,22 @@ class ClawbackService:
             explanation=explanation
         )
         self.clawbacks[clawback_record.clawback_id] = clawback_record
+        
+        # Log to blockchain
+        if status == ClawbackStatus.EXECUTED:
+            try:
+                await blockchain_audit_service.log_clawback_execution(
+                    clawback_id=clawback_record.clawback_id,
+                    clawback_data={
+                        "wallet_id": clawback_request.wallet_id,
+                        "amount": amount_to_reverse,
+                        "reason": clawback_request.reason.value,
+                        "transaction_id": str(clawback_request.transaction_id)
+                    }
+                )
+                logger.info(f"Clawback logged to blockchain: {clawback_record.clawback_id}")
+            except Exception as e:
+                logger.warning(f"Failed to log clawback to blockchain: {e}")
         
         processing_time = (time.perf_counter() - start_time) * 1000
         

@@ -10,6 +10,7 @@ from datetime import datetime
 from app.models.policy import Policy, PolicyCreate, PolicyResponse
 from app.utils.logger import get_logger, log_execution_time
 from app.utils.exceptions import PolicyNotFoundException
+from app.services.blockchain_audit_service import blockchain_audit_service
 
 logger = get_logger(__name__)
 
@@ -77,6 +78,21 @@ class PolicyService:
         self.policies[policy.policy_id] = policy
         
         logger.info(f"Policy created: {policy.policy_id} - {policy.name}")
+        
+        # Log to blockchain
+        try:
+            await blockchain_audit_service.log_policy_creation(
+                policy_id=policy.policy_id,
+                policy_data={
+                    "name": policy.name,
+                    "policy_type": policy.policy_type.value,
+                    "wallet_id": policy_data.wallet_id,
+                    "priority": policy.priority
+                }
+            )
+            logger.info(f"Policy creation logged to blockchain: {policy.policy_id}")
+        except Exception as e:
+            logger.warning(f"Failed to log policy creation to blockchain: {e}")
         
         return PolicyResponse(
             success=True,

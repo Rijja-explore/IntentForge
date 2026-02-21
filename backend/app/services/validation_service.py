@@ -17,6 +17,7 @@ from app.models.policy import Policy
 from app.utils.logger import get_logger, log_execution_time
 from app.utils.exceptions import ValidationException
 from app.services.explanation_generator_service import explanation_generator
+from app.services.blockchain_audit_service import blockchain_audit_service
 
 logger = get_logger(__name__)
 
@@ -128,6 +129,23 @@ class ValidationService:
             f"Transaction {transaction.transaction_id} validated: "
             f"{status.value} in {processing_time:.2f}ms with AI explanation"
         )
+        
+        # Log violations to blockchain
+        if violations and status == TransactionStatus.BLOCKED:
+            try:
+                await blockchain_audit_service.log_transaction_violation(
+                    transaction_id=str(transaction.transaction_id),
+                    wallet_id=transaction.wallet_id,
+                    violation_details={
+                        "violation_type": "POLICY_VIOLATION",
+                        "policy_id": policies_evaluated[0] if policies_evaluated else None,
+                        "amount": transaction.amount,
+                        "violations": violations
+                    }
+                )
+                logger.info(f"Transaction violation logged to blockchain: {transaction.transaction_id}")
+            except Exception as e:
+                logger.warning(f"Failed to log violation to blockchain: {e}")
         
         return result
     
