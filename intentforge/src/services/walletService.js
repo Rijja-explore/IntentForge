@@ -8,7 +8,7 @@ import {
 
 /* ── Demo fallback data ──────────────────────────────────────────── */
 const DEMO_WALLET = {
-  wallet_id: 'demo-wallet-00000000-0000-0000-0000-000000000001',
+  wallet_id: null,   // null = backend not reachable; never send to API
   owner_id: DEMO_OWNER_ID,
   balance: 50000.0,
   currency: 'INR',
@@ -29,13 +29,19 @@ export async function getOrCreateDemoWallet() {
     }
   }
 
-  const wallet = await createWallet({
-    owner_id: DEMO_OWNER_ID,
-    currency: 'INR',
-    initial_balance: 50000.0,
-  });
-  localStorage.setItem(DEMO_WALLET_STORAGE_KEY, wallet.wallet_id);
-  return wallet;
+  try {
+    const wallet = await api.post('/wallet/create', {
+      owner_id: DEMO_OWNER_ID,
+      currency: 'INR',
+      initial_balance: 50000.0,
+    });
+    if (wallet?.wallet_id) {
+      localStorage.setItem(DEMO_WALLET_STORAGE_KEY, wallet.wallet_id);
+    }
+    return wallet;
+  } catch {
+    return DEMO_WALLET;
+  }
 }
 
 export async function createWallet(payload) {
@@ -47,6 +53,7 @@ export async function createWallet(payload) {
 }
 
 export async function getWallet(walletId) {
+  if (!walletId) return DEMO_WALLET;
   try {
     return await api.get(`/wallet/${walletId}`);
   } catch {
@@ -55,6 +62,7 @@ export async function getWallet(walletId) {
 }
 
 export async function getWalletBalance(walletId) {
+  if (!walletId) return { wallet_id: null, balance: DEMO_WALLET.balance, currency: 'INR', is_locked: false };
   try {
     return await api.get(`/wallet/${walletId}/balance`);
   } catch {
@@ -75,3 +83,4 @@ export async function listWallets(ownerId) {
     return [DEMO_WALLET];
   }
 }
+

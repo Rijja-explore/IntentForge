@@ -9,11 +9,13 @@ export default function TransactionCard({ transaction }) {
   const [shouldShake, setShouldShake] = useState(false);
 
   useEffect(() => {
-    if (transaction.status === 'blocked') {
+    if (transaction?.status === 'blocked') {
       setShouldShake(true);
       setTimeout(() => setShouldShake(false), 500);
     }
-  }, [transaction.status]);
+  }, [transaction?.status]);
+
+  if (!transaction) return null;
 
   return (
     <motion.div

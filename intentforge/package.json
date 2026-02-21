@@ -2,6 +2,9 @@
   "name": "intentforge",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "blockchain"
+  ],
   "dependencies": {
     "@testing-library/dom": "^10.4.1",
     "@testing-library/jest-dom": "^6.9.1",
@@ -10,6 +13,7 @@
     "@tsparticles/react": "^3.0.0",
     "@tsparticles/slim": "^3.9.1",
     "autoprefixer": "^10.4.24",
+    "axios": "^1.13.5",
     "framer-motion": "^12.34.3",
     "lucide-react": "^0.575.0",
     "postcss": "^8.5.6",
@@ -22,10 +26,14 @@
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start":      "react-scripts start",
+    "build":      "react-scripts build",
+    "test":       "react-scripts test",
+    "blockchain": "npm -w intentforge-blockchain-backend run start",
+    "hardhat":    "npm -w intentforge-blockchain-backend run node",
+    "test:chain": "npm -w intentforge-blockchain-backend run test",
+    "backend":    "cd backend && py -3.13 -m uvicorn app.main:app --reload --port 8000",
+    "dev": "concurrently --names \"FRONTEND,BACKEND,BLOCKCHAIN\" --prefix-colors \"cyan,green,magenta\" \"npm run start\" \"npm run backend\" \"npm run blockchain\""
   },
   "eslintConfig": {
     "extends": [
@@ -44,5 +52,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2"
   }
 }

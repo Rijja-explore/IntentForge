@@ -10,6 +10,15 @@ export function formatAmount(amount) {
   return '₹' + amount.toLocaleString('en-IN');
 }
 
+/** 1 ETH = ₹2,50,000 (display conversion — all on-chain values settle in ETH) */
+export const ETH_TO_INR = 250000;
+
+/** Converts an ETH amount (string or number) to a ₹ formatted string e.g. "₹25,000" */
+export function formatEthAsInr(ethAmount) {
+  const eth = parseFloat(ethAmount) || 0;
+  return '₹' + Math.round(eth * ETH_TO_INR).toLocaleString('en-IN');
+}
+
 export function formatDate(date) {
   return new Intl.DateTimeFormat('en-IN', {
     day: '2-digit',

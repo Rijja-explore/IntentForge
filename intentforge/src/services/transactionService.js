@@ -18,10 +18,11 @@ export async function validateTransaction(payload) {
 }
 
 /**
- * Simulate a transaction (identical to validate — no persistence emphasis).
+ * Simulate a transaction (identical to validate — /transaction/simulate
+ * is not a separate endpoint, so we reuse /transaction/validate).
  */
 export async function simulateTransaction(payload) {
-  return api.post('/transaction/simulate', payload);
+  return api.post('/transaction/validate', payload);
 }
 
 export async function getTransaction(txId) {
@@ -55,4 +56,41 @@ export function getDecisionMeta(status) {
     default:
       return { label: status || 'Pending', color: '#94A3B8', bg: 'rgba(148,163,184,0.1)' };
   }
+}
+
+/**
+ * Fetch all blocked/violation transactions for a wallet that have not yet
+ * been clawedback. Returns an array of transaction objects.
+ */
+export async function getViolations(walletId) {
+  try {
+    const history = await getTransactionHistory(walletId);
+    const txns = Array.isArray(history) ? history : (history?.transactions ?? []);
+    return txns.filter(
+      (t) => (t.status === 'BLOCKED' || t.status === 'VIOLATION') && !t.clawback_executed
+    );
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Auto-clawback all pending violations for a wallet.
+ * Returns { secured: number } — count of clawbacks successfully initiated.
+ */
+export async function autoClawback(walletId) {
+  const violations = await getViolations(walletId);
+  let secured = 0;
+  for (const txn of violations) {
+    try {
+      await executeClawback({
+        transaction_id: txn.id || txn.transaction_id,
+        reason: 'AUTO_CLAWBACK: policy violation detected by Auto-Protect',
+      });
+      secured++;
+    } catch {
+      /* skip individual failures — continue processing remaining */
+    }
+  }
+  return { secured };
 }

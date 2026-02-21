@@ -1,7 +1,18 @@
 import { motion } from 'framer-motion';
-import { Bell, Search, Shield, ArrowLeft, Menu } from 'lucide-react';
+import { Bell, Search, Shield, ArrowLeft, Menu, Zap, Inbox } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { useWeb3 } from '../../hooks/useWeb3';
+import { formatEthAsInr } from '../../utils/formatters';
+
+function shortenAddr(addr) {
+  return addr ? `${addr.slice(0, 6)}…${addr.slice(-4)}` : '';
+}
+
+const ROLE_CFG = {
+  lender:   { label: 'LENDER',   color: '#A78BFA', bg: 'rgba(167,139,250,0.12)', border: 'rgba(167,139,250,0.28)', icon: Zap    },
+  receiver: { label: 'RECEIVER', color: '#34D399', bg: 'rgba(52,211,153,0.12)',  border: 'rgba(52,211,153,0.28)',  icon: Inbox  },
+};
 
 function LiveClock() {
   const [time, setTime] = useState(new Date());
@@ -17,6 +28,10 @@ function LiveClock() {
 }
 
 export default function Header({ title = 'Dashboard', onMenuOpen, sidebarOpen = true }) {
+  const { account, role, ethBalance } = useWeb3();
+  const roleCfg = ROLE_CFG[role];
+  const RoleIcon = roleCfg?.icon;
+
   const [notifCount] = useState(3);
   const [showNotif, setShowNotif] = useState(false);
   const navigate = useNavigate();
@@ -84,7 +99,18 @@ export default function Header({ title = 'Dashboard', onMenuOpen, sidebarOpen = 
             {title}
           </h2>
           <div className="flex items-center gap-1.5 mt-0.5">
-            <p className="text-xs font-body text-slate-500">{greeting}, Prasad</p>
+            {roleCfg && (
+              <span
+                className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full font-mono text-[10px] font-bold"
+                style={{ background: roleCfg.bg, border: `1px solid ${roleCfg.border}`, color: roleCfg.color }}
+              >
+                {RoleIcon && <RoleIcon size={9} />}
+                {roleCfg.label}
+              </span>
+            )}
+            <p className="text-xs font-body text-slate-500">
+              {greeting}{account ? `, ${shortenAddr(account)}` : ''}
+            </p>
             <span className="text-slate-700">·</span>
             <LiveClock />
           </div>
@@ -109,19 +135,21 @@ export default function Header({ title = 'Dashboard', onMenuOpen, sidebarOpen = 
           </span>
         </motion.div>
 
-        {/* Trust Score Badge */}
-        <motion.div
-          whileHover={{ scale: 1.04 }}
-          className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl"
-          style={{
-            background: 'rgba(52,211,153,0.08)',
-            border: '1px solid rgba(52,211,153,0.2)',
-          }}
-        >
-          <Shield size={14} className="text-success-emerald" />
-          <span className="text-sm font-mono font-bold text-success-emerald">87</span>
-          <span className="text-xs font-body text-success-emerald/60 hidden lg:block">Trust</span>
-        </motion.div>
+        {/* ETH Balance */}
+        {account && (
+          <motion.div
+            whileHover={{ scale: 1.04 }}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl"
+            style={{
+              background: 'rgba(52,211,153,0.08)',
+              border: '1px solid rgba(52,211,153,0.2)',
+            }}
+          >
+            <Shield size={14} className="text-success-emerald" />
+            <span className="text-sm font-mono font-bold text-success-emerald">{formatEthAsInr(ethBalance)}</span>
+            <span className="text-[10px] font-mono text-success-emerald/50 hidden lg:block">{ethBalance} ETH</span>
+          </motion.div>
+        )}
 
         {/* Notifications */}
         <div className="relative">

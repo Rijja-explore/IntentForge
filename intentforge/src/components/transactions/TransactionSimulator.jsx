@@ -1,8 +1,12 @@
-/* ─── Transaction Simulator ──────────────────────────────────────── */
+/* ─── Transaction Simulator ─────────────────────────────────────────
+ * Simulates transactions through the validation engine.
+ * Location is mapped to ISO 3166-2:IN state codes (e.g., IN-MH) for
+ * geo-fence checks in the backend. GPS auto-detect finds nearest city.
+ * ─────────────────────────────────────────────────────────────── */
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { Play, Loader, CheckCircle, XCircle, AlertTriangle, RotateCcw } from 'lucide-react';
+import { Play, Loader, CheckCircle, XCircle, AlertTriangle, RotateCcw, MapPin, Navigation } from 'lucide-react';
 import { MERCHANTS } from '../../utils/constants';
 import { simulateTransaction, getDecisionMeta, executeClawback } from '../../services/transactionService';
 import { DEMO_WALLET_STORAGE_KEY } from '../../config/api';
@@ -15,19 +19,74 @@ const STATUS_ICON = {
   CLAWBACK_REQUIRED: { Icon: RotateCcw,     class: 'text-money-gold' },
 };
 
+// City display name → ISO 3166-2:IN state code used in backend geo-fence checks
+const CITY_CODE_MAP = {
+  'Mumbai':    'IN-MH',
+  'Delhi':     'IN-DL',
+  'Bangalore': 'IN-KA',
+  'Hyderabad': 'IN-TS',
+  'Chennai':   'IN-TN',
+  'Pune':      'IN-MH',
+  'Kolkata':   'IN-WB',
+  'Ahmedabad': 'IN-GJ',
+};
+
+const CITIES = Object.keys(CITY_CODE_MAP);
+
+// Approximate coordinates for nearest-city GPS resolution
+const CITY_COORDS = [
+  { name: 'Mumbai',    lat: 19.076, lng: 72.877 },
+  { name: 'Delhi',     lat: 28.704, lng: 77.102 },
+  { name: 'Bangalore', lat: 12.972, lng: 77.594 },
+  { name: 'Hyderabad', lat: 17.385, lng: 78.487 },
+  { name: 'Chennai',   lat: 13.083, lng: 80.270 },
+  { name: 'Pune',      lat: 18.520, lng: 73.857 },
+  { name: 'Kolkata',   lat: 22.572, lng: 88.363 },
+  { name: 'Ahmedabad', lat: 23.023, lng: 72.571 },
+];
+
+function nearestCity(lat, lng) {
+  let best = CITY_COORDS[0].name;
+  let bestDist = Infinity;
+  CITY_COORDS.forEach(({ name, lat: clat, lng: clng }) => {
+    const d = (clat - lat) ** 2 + (clng - lng) ** 2;
+    if (d < bestDist) { bestDist = d; best = name; }
+  });
+  return best;
+}
+
 export default function TransactionSimulator({ onResult }) {
-  const [merchant, setMerchant]   = useState(MERCHANTS[0]);
-  const [amount, setAmount]       = useState('');
-  const [location, setLocation]   = useState('Mumbai');
-  const [loading, setLoading]     = useState(false);
-  const [result, setResult]       = useState(null);
+  const [merchant, setMerchant]       = useState(MERCHANTS[0]);
+  const [amount, setAmount]           = useState('');
+  const [city, setCity]               = useState('Mumbai');
+  const [gpsLoading, setGpsLoading]   = useState(false);
+  const [gpsCityName, setGpsCityName] = useState(null);
+  const [loading, setLoading]         = useState(false);
+  const [result, setResult]           = useState(null);
   const [clawbackDone, setClawbackDone] = useState(false);
+
+  const detectGPS = () => {
+    if (!navigator.geolocation) return;
+    setGpsLoading(true);
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const found = nearestCity(coords.latitude, coords.longitude);
+        setCity(found);
+        setGpsCityName(found);
+        setGpsLoading(false);
+      },
+      () => setGpsLoading(false),
+      { timeout: 6000 }
+    );
+  };
 
   const handleSimulate = async () => {
     if (!amount || isNaN(amount)) return;
     setLoading(true);
     setResult(null);
     setClawbackDone(false);
+
+    const locationCode = CITY_CODE_MAP[city] || city;
 
     try {
       const walletId = localStorage.getItem(DEMO_WALLET_STORAGE_KEY) || 'demo-wallet-id';
@@ -36,13 +95,12 @@ export default function TransactionSimulator({ onResult }) {
         amount: parseFloat(amount),
         category: merchant.category,
         merchant: merchant.name,
-        location,
+        location: locationCode,
         metadata: { channel: 'simulator', demo: true },
       });
       setResult(data);
       onResult && onResult(data);
-    } catch (err) {
-      // Graceful demo fallback
+    } catch {
       const isGambling = merchant.category === 'gambling';
       const demo = {
         transaction_id: `demo-${Date.now()}`,
@@ -54,7 +112,7 @@ export default function TransactionSimulator({ onResult }) {
         processing_time_ms: 42,
         ai_reasoning: isGambling
           ? 'Gambling transactions are restricted by your safety rule.'
-          : `₹${amount} at ${merchant.name} approved within category limits.`,
+          : `₹${amount} at ${merchant.name} (${locationCode}) approved within category limits.`,
         confidence: 0.96,
       };
       setResult(demo);
@@ -71,9 +129,7 @@ export default function TransactionSimulator({ onResult }) {
         transaction_id: result.transaction_id,
         reason: 'Manual clawback initiated via simulator',
       });
-    } catch {
-      // Proceed optimistically for demo
-    }
+    } catch { /* demo: proceed optimistically */ }
     setClawbackDone(true);
     setResult(r => ({ ...r, status: 'CLAWBACK_REQUIRED' }));
   };
@@ -120,7 +176,7 @@ export default function TransactionSimulator({ onResult }) {
           </div>
         </div>
 
-        {/* Amount + Location row */}
+        {/* Amount + Location */}
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="font-body text-xs text-slate-400 uppercase tracking-wider mb-2 block">
@@ -134,20 +190,48 @@ export default function TransactionSimulator({ onResult }) {
               className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-100 font-mono text-sm placeholder-slate-500 outline-none focus:border-trust-electric/50 transition-colors"
             />
           </div>
+
           <div>
-            <label className="font-body text-xs text-slate-400 uppercase tracking-wider mb-2 block">
-              Location
-            </label>
+            <div className="flex items-center justify-between mb-2">
+              <label className="font-body text-xs text-slate-400 uppercase tracking-wider">
+                Location
+              </label>
+              <motion.button
+                whileHover={{ scale: 1.08 }}
+                whileTap={{ scale: 0.92 }}
+                onClick={detectGPS}
+                disabled={gpsLoading}
+                title="Auto-detect via GPS"
+                className="flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-mono font-semibold"
+                style={{
+                  background: gpsCityName ? 'rgba(52,211,153,0.12)' : 'rgba(167,139,250,0.1)',
+                  border: gpsCityName
+                    ? '1px solid rgba(52,211,153,0.3)'
+                    : '1px solid rgba(167,139,250,0.2)',
+                  color: gpsCityName ? '#34D399' : '#A78BFA',
+                }}
+              >
+                {gpsLoading
+                  ? <Loader size={10} className="animate-spin" />
+                  : gpsCityName
+                  ? <><Navigation size={10} /> {gpsCityName}</>
+                  : <><MapPin size={10} /> GPS</>
+                }
+              </motion.button>
+            </div>
             <select
-              value={location}
-              onChange={(e) => setLocation(e.target.value)}
-              className="w-full px-4 py-2.5 rounded-xl bg-white/5 border border-white/10 text-slate-100 font-body text-sm outline-none focus:border-trust-electric/50 transition-colors"
-              style={{ background: 'rgba(14,19,42,0.8)' }}
+              value={city}
+              onChange={(e) => { setCity(e.target.value); setGpsCityName(null); }}
+              className="w-full px-4 py-2.5 rounded-xl border text-slate-100 font-body text-sm outline-none focus:border-trust-electric/50 transition-colors"
+              style={{ background: 'rgba(14,19,42,0.85)', borderColor: 'rgba(255,255,255,0.1)' }}
             >
-              {['Mumbai', 'Delhi', 'Bangalore', 'Hyderabad', 'Chennai', 'Pune'].map(c => (
+              {CITIES.map(c => (
                 <option key={c} value={c} style={{ background: '#0E132A' }}>{c}</option>
               ))}
             </select>
+            <p className="font-mono text-[10px] text-slate-600 mt-1">
+              {CITY_CODE_MAP[city]}
+            </p>
           </div>
         </div>
 
@@ -175,11 +259,10 @@ export default function TransactionSimulator({ onResult }) {
           className="w-full flex items-center justify-center gap-2 py-3 rounded-xl font-display font-semibold text-white transition-all disabled:opacity-40"
           style={{ background: 'linear-gradient(135deg, #7C3AED, #C026D3)' }}
         >
-          {loading ? (
-            <><Loader size={16} className="animate-spin" />Validating...</>
-          ) : (
-            <><Play size={16} />Simulate Transaction</>
-          )}
+          {loading
+            ? <><Loader size={16} className="animate-spin" />Validating…</>
+            : <><Play size={16} />Simulate Transaction</>
+          }
         </motion.button>
 
         {/* Result */}
@@ -197,15 +280,12 @@ export default function TransactionSimulator({ onResult }) {
             >
               <div className="flex items-center gap-3 mb-3">
                 <StatusIcon size={22} className={statusClass} />
-                <span
-                  className="font-display font-bold text-lg"
-                  style={{ color: decisionMeta?.color }}
-                >
+                <span className="font-display font-bold text-lg" style={{ color: decisionMeta?.color }}>
                   {clawbackDone ? 'Clawback Initiated' : result.status}
                 </span>
-                {result.processing_time_ms && (
+                {result.processing_time_ms != null && (
                   <span className="ml-auto font-mono text-xs text-slate-400">
-                    {result.processing_time_ms.toFixed(1)}ms
+                    {Number(result.processing_time_ms).toFixed(1)}ms
                   </span>
                 )}
               </div>
@@ -224,7 +304,6 @@ export default function TransactionSimulator({ onResult }) {
                 </p>
               )}
 
-              {/* Clawback button for approved transactions */}
               {result.status === 'APPROVED' && !clawbackDone && (
                 <motion.button
                   initial={{ opacity: 0 }}

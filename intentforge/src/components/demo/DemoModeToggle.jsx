@@ -25,14 +25,17 @@ export default function DemoModeToggle({ onToggle }) {
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       onClick={() => setActive(p => !p)}
-      className={`
-        flex items-center gap-2 px-4 py-2 rounded-xl
-        border transition-all duration-300 text-sm font-body font-semibold
-        ${active
-          ? 'bg-money-gold/20 border-money-gold text-money-gold shadow-glow-gold'
-          : 'bg-violet-50 border-violet-100 text-slate-400'
-        }
-      `}
+      className="flex items-center gap-2 px-4 py-2 rounded-xl border transition-all duration-300 text-sm font-body font-semibold"
+      style={active ? {
+        background: 'rgba(251,146,60,0.15)',
+        border: '1px solid rgba(251,146,60,0.5)',
+        color: '#FB923C',
+        boxShadow: '0 0 16px rgba(251,146,60,0.25)',
+      } : {
+        background: 'rgba(14,19,42,0.8)',
+        border: '1px solid rgba(167,139,250,0.2)',
+        color: '#64748B',
+      }}
     >
       <Zap size={16} />
       <span>Demo Mode</span>
@@ -42,7 +45,8 @@ export default function DemoModeToggle({ onToggle }) {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
-            className="text-xs bg-money-gold text-white px-1.5 py-0.5 rounded-full font-bold"
+            className="text-xs px-1.5 py-0.5 rounded-full font-bold"
+            style={{ background: '#FB923C', color: '#fff' }}
           >
             ON
           </motion.span>

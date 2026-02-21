@@ -1,36 +1,48 @@
 import { motion, AnimatePresence } from 'framer-motion';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { Mic, MicOff } from 'lucide-react';
 
 export default function VoiceInput({ onResult }) {
   const [listening, setListening] = useState(false);
   const [transcript, setTranscript] = useState('');
+  // Ref prevents stale closure: onend always reads the latest value
+  const transcriptRef = useRef('');
 
   const startListening = useCallback(() => {
     if (!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)) {
-      alert('Voice input not supported in this browser. Use Chrome.');
+      alert('Voice input requires Chrome or a Chromium-based browser.');
       return;
     }
     const SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
     const recognition = new SpeechRec();
-    recognition.lang = 'en-IN';
+    recognition.lang = 'en-US';
     recognition.interimResults = true;
     recognition.continuous = false;
 
     recognition.onresult = (e) => {
       const t = Array.from(e.results).map(r => r[0].transcript).join('');
+      transcriptRef.current = t;
       setTranscript(t);
     };
 
     recognition.onend = () => {
       setListening(false);
-      if (transcript) onResult && onResult(transcript);
+      const finalText = transcriptRef.current.trim();
+      if (finalText) {
+        onResult && onResult(finalText);
+      }
+      transcriptRef.current = '';
     };
 
-    recognition.start();
+    recognition.onerror = () => {
+      setListening(false);
+    };
+
     setListening(true);
     setTranscript('');
-  }, [transcript, onResult]);
+    transcriptRef.current = '';
+    recognition.start();
+  }, [onResult]);
 
   return (
     <div className="flex flex-col items-center gap-4">
@@ -55,7 +67,6 @@ export default function VoiceInput({ onResult }) {
           <Mic size={24} className="text-trust-electric" />
         )}
 
-        {/* Pulse rings when listening */}
         {listening && [1, 2, 3].map((i) => (
           <motion.div
             key={i}
@@ -66,7 +77,7 @@ export default function VoiceInput({ onResult }) {
         ))}
       </motion.button>
 
-      {/* Waveform visual */}
+      {/* Waveform */}
       {listening && (
         <motion.div
           initial={{ opacity: 0, height: 0 }}
@@ -77,21 +88,22 @@ export default function VoiceInput({ onResult }) {
             <motion.div
               key={i}
               className="w-1 bg-trust-electric rounded-full"
-              animate={{ height: [4, Math.random() * 32 + 8, 4] }}
-              transition={{ duration: 0.4 + Math.random() * 0.4, repeat: Infinity }}
+              animate={{ height: [4, 8 + (i % 5) * 6, 4] }}
+              transition={{ duration: 0.5 + (i % 3) * 0.15, repeat: Infinity }}
             />
           ))}
         </motion.div>
       )}
 
-      {/* Transcript */}
+      {/* Transcript preview */}
       <AnimatePresence>
         {transcript && (
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="px-4 py-2 rounded-xl bg-violet-50 border border-violet-100 text-sm font-body text-slate-500 text-center max-w-xs"
+            className="px-4 py-2 rounded-xl text-sm font-body text-slate-200 text-center max-w-xs"
+            style={{ background: 'rgba(124,58,237,0.12)', border: '1px solid rgba(167,139,250,0.25)' }}
           >
             "{transcript}"
           </motion.div>
@@ -99,7 +111,7 @@ export default function VoiceInput({ onResult }) {
       </AnimatePresence>
 
       <p className="text-xs font-body text-slate-400 text-center">
-        {listening ? 'Listening... speak your command' : 'Say: "Lock 5000 rupees for groceries"'}
+        {listening ? 'Listening… speak your command' : 'Click the mic and speak a command'}
       </p>
     </div>
   );

@@ -1,70 +1,219 @@
-# Getting Started with Create React App
+# IntentForge
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+AI-powered programmable spending management platform with on-chain escrow enforcement.
+Set natural-language intents, enforce them as on-chain policies, lock/claim ETH via smart contract, and get real-time ML compliance insights.
 
-## Available Scripts
+---
 
-In the project directory, you can run:
+## Architecture
 
-### `npm start`
+```
+intentforge/
+├── src/                     React 19 frontend (port 3000)
+│   ├── components/
+│   │   ├── ai/              ChatPanel, CopilotOrb, InsightsPanel, VoiceInput
+│   │   ├── intent/          CreateRuleForm, LenderDashboard, ReceiverDashboard,
+│   │   │                    RuleCard, SharedWalletInfo, Unauthorized
+│   │   ├── layout/          Header, Sidebar, MobileNav
+│   │   ├── rules/           RuleBuilder, TemplateSelector, DeployButton
+│   │   ├── transactions/    TransactionCard, TransactionSimulator, LiveFeed, FilterBar
+│   │   └── shared/          GlassCard, AnimatedButton, StatusBadge, LoadingSpinner
+│   ├── hooks/               useWeb3, useWallet, useTransactions, useCompliance
+│   ├── pages/               Dashboard, Transactions, RuleBuilderPage, AIInsights,
+│   │                        BlockchainAudit, IntentRules, Settings, Landing
+│   ├── services/            api.js (axios), contractService.js (Ethers v6),
+│   │                        aiService, policyService, transactionService, walletService
+│   └── config/              api.js (URLs/keys), contracts.js (ABI + deployed address)
+│
+├── backend/                 FastAPI + Python (port 8000)
+│   ├── app/routes/          /ai, /policy, /transaction, /wallet, /clawback, /metrics
+│   └── app/services/        AI intent parser, compliance ML, validation, explanation
+│
+└── blockchain/
+    └── contracts/           IntentForge.sol — on-chain role enforcement
+```
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+---
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## Quick Start
 
-### `npm test`
+### 1 — Prerequisites
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+- Node.js ≥ 18
+- Python ≥ 3.11
+- Hardhat (`npm install -g hardhat`)
+- MetaMask browser extension
+- Chrome (required for voice input)
 
-### `npm run build`
+### 2 — Start Hardhat local node
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+cd intentforge
+npx hardhat node
+```
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Copy the first two accounts shown in the terminal:
+- Account #0 → **Lender** (creates + locks ETH rules)
+- Account #1 → **Receiver** (claims ETH from rules)
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Import both accounts into MetaMask using the **private keys printed in the terminal output** (never store those keys anywhere else).
 
-### `npm run eject`
+### 3 — Deploy the contract
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+```bash
+npx hardhat run blockchain/scripts/deploy-intent.js --network localhost
+```
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+This auto-generates `src/config/contracts.js` with the deployed address and ABI.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 4 — Start the backend
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+```bash
+cd intentforge/backend
+pip install -r requirements.txt
+python -m uvicorn app.main:app --reload --port 8000
+```
 
-## Learn More
+### 5 — Start the frontend
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+```bash
+cd intentforge
+npm install
+npm start
+```
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+Open `http://localhost:3000` → connect MetaMask → app routes based on your account.
 
-### Code Splitting
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## Role-Based Access
 
-### Analyzing the Bundle Size
+| Account | Role | Tabs visible | Permissions |
+|---------|------|-------------|-------------|
+| Account #0 | **LENDER** | Dashboard, Rule Builder, Transactions, AI Insights, Blockchain Audit, Fund Rules, Settings | Create rules, lock ETH, view AI analytics |
+| Account #1 | **RECEIVER** | Dashboard, Transactions, Fund Rules, Settings | View rules, claim eligible ETH |
+| Any other | **UNAUTHORIZED** | None | Shown an error screen with instructions |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+Role detection is purely UI-level. All access enforcement happens in `IntentForge.sol`:
+- Only the designated receiver can call `claimIntent(ruleId)`
+- Contract rejects claims after expiry or if the rule was already claimed
 
-### Making a Progressive Web App
+---
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Smart Contract: IntentForge.sol
 
-### Advanced Configuration
+Deployed at: `INTENT_FORGE_ADDRESS` in `src/config/contracts.js`
+Network: Hardhat Local — Chain ID 1337 — RPC `http://127.0.0.1:8545`
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+### Key functions
 
-### Deployment
+| Function | Who calls | What it does |
+|----------|-----------|-------------|
+| `createIntent(receiver, expiry)` | Lender | Locks `msg.value` ETH; emits `IntentCreated` |
+| `claimIntent(ruleId)` | Receiver | Transfers locked ETH; emits `IntentClaimed` |
+| `getUserRules(address)` | Anyone | Returns all `bytes32` rule IDs for that address |
+| `getRule(ruleId)` | Anyone | Returns sender, receiver, amount, expiry, active |
+| `getRuleStatus(ruleId)` | Anyone | Returns `"ACTIVE"` \| `"CLAIMED"` \| `"EXPIRED"` \| `"NOT_FOUND"` |
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+### Events
 
-### `npm run build` fails to minify
+```solidity
+event IntentCreated(bytes32 indexed ruleId, address indexed sender, address indexed receiver, uint256 amount, uint256 expiry);
+event IntentClaimed(bytes32 indexed ruleId, address indexed receiver, uint256 amount);
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+---
+
+## Features
+
+### On-chain Fund Rules (`/intent`)
+- **Lender**: fill receiver address, ETH amount, expiry → submit → MetaMask confirms tx
+- **Receiver**: see all rules addressed to them, claim active rules before expiry
+- Expired rules show a red warning banner; lender can re-create if needed
+
+### AI Copilot (floating orb)
+- Type natural language: *"block gambling for 30 days"*, *"limit food to ₹3000/week"*
+- When backend is online: parses intent → returns structured policy → deploy button
+- When backend is offline: context-aware guidance based on keywords
+
+### Voice Commands (`/ai` → Voice section)
+- Click mic → speak a command → transcript is sent to `parseIntent` API
+- Result shown inline (confidence %, parsed policy, deploy option)
+- Requires Chrome; uses `SpeechRecognition` API
+
+### AI Recommendations
+- Clicking an AI suggestion card sends the description to `parseIntent`
+- Response shown inline below the card
+
+### Transaction History (`/transactions`)
+- Weekly activity bar chart (approved vs blocked amounts)
+- Live Validator: run a test transaction against deployed policies
+- Full filterable transaction history
+
+### Compliance & Anomaly Detection (`/ai`)
+- Compliance score gauge (0–100), 7-day trend chart
+- AI anomaly feed: unusual spending patterns, duplicate charges
+- Timeline of compliance events
+
+### Rule Builder (`/rules`) — Lender only
+- Template-based rule creation (daily cap, block categories, time lock)
+- Deploys to backend policy engine via API
+
+---
+
+## Navigation
+
+### Desktop sidebar
+- Lender: 7 items (Dashboard, Rule Builder, Transactions, AI Insights, Blockchain Audit, Fund Rules, Settings)
+- Receiver: 4 items (Dashboard, Transactions, Fund Rules, Settings)
+
+### Mobile bottom bar
+- Role-filtered subset of above
+
+---
+
+## Error Handling
+
+- MetaMask rejection (code 4001): `"Connection rejected — please approve the request in MetaMask."`
+- Pending request (code -32002): `"MetaMask request already pending — please open the extension."`
+- All error messages are sanitized: private keys and RPC URLs are redacted before display
+- Backend offline: AI features degrade gracefully with helpful offline messages
+
+---
+
+## Settings (`/settings`)
+
+Settings are role-aware:
+
+| Group | Lender | Receiver |
+|-------|--------|----------|
+| Security | 2-FA, Transaction PIN | 2-FA, Transaction PIN |
+| Notifications | Claim Alerts, Expiry Alerts, AI Suggestions | New Rule Alerts, Expiry Reminders, Claim Confirmed |
+| Analytics | On-chain Analytics, Data Contribution | — |
+| Privacy | Anonymous Mode | Anonymous Mode |
+| Danger Zone | Reset All Rules + Clear History | Clear History only |
+
+---
+
+## Backend API (when running)
+
+Base URL: `http://localhost:8000/api/v1`
+
+| Endpoint | Method | Description |
+|----------|--------|-------------|
+| `/ai/parse-intent` | POST | NL → structured policy |
+| `/ai/suggestions/:walletId` | GET | AI-driven recommendations |
+| `/policy/create` | POST | Create and attach a policy |
+| `/transaction/validate` | POST | Validate tx against policies |
+| `/transaction/wallet/:id/history` | GET | Transaction history |
+| `/wallet/create` | POST | Create demo wallet |
+| `/metrics/:walletId` | GET | Compliance metrics |
+
+---
+
+## Security Model
+
+- **UI separation is UX only** — any frontend can be bypassed
+- **All financial enforcement is on-chain** in `IntentForge.sol`
+- The Solidity contract validates: receiver identity, rule activity, expiry timestamp
+- Frontend private keys are never stored, logged, or exposed in error messages

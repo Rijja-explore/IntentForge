@@ -1,10 +1,11 @@
 import { motion } from 'framer-motion';
 import { containerVariants } from '../../utils/animations';
 import SuggestionCard from './SuggestionCard';
-import { AI_SUGGESTIONS } from '../../utils/constants';
+import { AI_SUGGESTIONS, RECEIVER_SUGGESTIONS } from '../../utils/constants';
 import { Brain, Sparkles } from 'lucide-react';
 
-export default function InsightsPanel({ onApply }) {
+export default function InsightsPanel({ onApply, role }) {
+  const suggestions = role === 'receiver' ? RECEIVER_SUGGESTIONS : AI_SUGGESTIONS;
   return (
     <div className="space-y-4">
       <div className="flex items-center gap-3">
@@ -21,7 +22,7 @@ export default function InsightsPanel({ onApply }) {
         </div>
         <div className="ml-auto flex items-center gap-1.5 text-xs font-body text-money-gold">
           <Sparkles size={14} />
-          <span>3 insights</span>
+          <span>{suggestions.length} insights</span>
         </div>
       </div>
 
@@ -31,7 +32,7 @@ export default function InsightsPanel({ onApply }) {
         animate="visible"
         className="space-y-3"
       >
-        {AI_SUGGESTIONS.map((s) => (
+        {suggestions.map((s) => (
           <SuggestionCard key={s.id} suggestion={s} onAction={onApply} />
         ))}
       </motion.div>

@@ -121,3 +121,33 @@ export const AI_SUGGESTIONS = [
     type: 'merchant_whitelist',
   },
 ];
+
+export const RECEIVER_SUGGESTIONS = [
+  {
+    id: 4,
+    title: 'Rules Expiring Soon',
+    description: 'You have rules that expire within 48 hours. Claim eligible funds before the window closes.',
+    action: 'Review',
+    confidence: 96,
+    impact: 'Avoid losing claimable ETH',
+    type: 'expiry_alert',
+  },
+  {
+    id: 5,
+    title: 'Unclaimed Funds Detected',
+    description: 'The lender has locked ETH for you. Check Fund Rules to see which are claimable now.',
+    action: 'Review',
+    confidence: 100,
+    impact: 'Claim your locked ETH',
+    type: 'claim_alert',
+  },
+  {
+    id: 6,
+    title: 'Subscription Audit',
+    description: '6 recurring subscriptions detected. Review and cancel unused ones?',
+    action: 'Review',
+    confidence: 87,
+    impact: 'Save ₹2,400/month',
+    type: 'merchant_whitelist',
+  },
+];

@@ -1,16 +1,22 @@
 import { NavLink } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { LayoutDashboard, Settings2, Activity, Brain, Settings } from 'lucide-react';
+import { LayoutDashboard, Settings2, Activity, Brain, ShieldCheck, Settings } from 'lucide-react';
+import { useWeb3 } from '../../hooks/useWeb3';
 
-const navItems = [
-  { path: '/', icon: LayoutDashboard, label: 'Home' },
-  { path: '/rules', icon: Settings2, label: 'Rules' },
-  { path: '/transactions', icon: Activity, label: 'Txns' },
-  { path: '/ai', icon: Brain, label: 'AI' },
-  { path: '/settings', icon: Settings, label: 'More' },
+// ── All possible mobile nav items ────────────────────────────────────
+const ALL_NAV = [
+  { path: '/',             icon: LayoutDashboard, label: 'Home',   roles: ['lender', 'receiver'] },
+  { path: '/rules',        icon: Settings2,       label: 'Rules',  roles: ['lender'] },
+  { path: '/transactions', icon: Activity,        label: 'Txns',   roles: ['lender', 'receiver'] },
+  { path: '/ai',           icon: Brain,           label: 'AI',     roles: ['lender'] },
+  { path: '/intent',       icon: ShieldCheck,     label: 'Funds',  roles: ['lender', 'receiver'] },
+  { path: '/settings',     icon: Settings,        label: 'Config', roles: ['receiver'] },
 ];
 
 export default function MobileNav() {
+  const { role } = useWeb3();
+  const navItems = ALL_NAV.filter((item) => item.roles.includes(role));
+
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50
       bg-[#04060E]/95 backdrop-blur-xl border-t border-violet-900/30
@@ -23,7 +29,7 @@ export default function MobileNav() {
           end={item.path === '/'}
           className={({ isActive }) => `
             flex flex-col items-center gap-1 px-3 py-2 rounded-xl
-            transition-all duration-200 min-w-[56px]
+            transition-all duration-200 min-w-[52px]
             ${isActive ? 'text-trust-electric' : 'text-slate-400'}
           `}
         >
