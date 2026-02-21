@@ -33,9 +33,6 @@ export default function Dashboard() {
 
   return (
     <div className="relative min-h-screen">
-      {/* Aurora background */}
-      <div className="aurora-bg" />
-
       <Header title="Dashboard" />
       <div className="relative z-10 p-4 md:p-6 space-y-6 pb-24 md:pb-6">
 
