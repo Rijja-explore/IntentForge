@@ -18,9 +18,10 @@ export default function RuleCard({ rule, onDelete, onToggle }) {
     <motion.div
       variants={cardVariants}
       whileHover={{ boxShadow: '0 8px 32px rgba(124, 58, 237, 0.12)' }}
-      className={`bg-white border rounded-2xl overflow-hidden shadow-glass transition-all ${
-        active ? `${colors.border}` : 'border-violet-100 opacity-70'
+      className={`border rounded-2xl overflow-hidden shadow-glass transition-all ${
+        active ? `${colors.border}` : 'border-violet-900/40 opacity-70'
       }`}
+      style={{ background: 'rgba(14,19,42,0.85)' }}
     >
       {/* Color accent top bar */}
       <div className={`h-1 w-full ${active ? `bg-gradient-primary` : 'bg-violet-100'}`} />
@@ -30,7 +31,7 @@ export default function RuleCard({ rule, onDelete, onToggle }) {
           <div className="flex items-center gap-3">
             <span className="text-2xl">{rule.icon}</span>
             <div>
-              <h4 className="font-display font-semibold text-sm text-violet-950">{rule.title}</h4>
+              <h4 className="font-display font-semibold text-sm text-slate-100">{rule.title}</h4>
               <p className="font-body text-xs text-slate-400 mt-0.5">{rule.description}</p>
             </div>
           </div>
@@ -53,7 +54,7 @@ export default function RuleCard({ rule, onDelete, onToggle }) {
         </div>
 
         {/* Footer */}
-        <div className="flex items-center justify-between mt-4 pt-3 border-t border-violet-50">
+        <div className="flex items-center justify-between mt-4 pt-3 border-t border-violet-900/30">
           <div className={`text-xs font-body font-medium px-2.5 py-1 rounded-full ${colors.bg} ${colors.text}`}>
             {rule.rule?.type?.replace(/_/g, ' ') || 'Custom Rule'}
           </div>
@@ -61,7 +62,7 @@ export default function RuleCard({ rule, onDelete, onToggle }) {
             <motion.button
               whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
               onClick={() => setExpanded(p => !p)}
-              className="p-1.5 rounded-lg text-slate-400 hover:text-trust-electric hover:bg-violet-50"
+              className="p-1.5 rounded-lg text-slate-400 hover:text-trust-electric hover:bg-violet-900/20"
               aria-label="Expand rule"
             >
               <motion.div animate={{ rotate: expanded ? 180 : 0 }}>
@@ -88,7 +89,7 @@ export default function RuleCard({ rule, onDelete, onToggle }) {
               exit={{ height: 0, opacity: 0 }}
               className="overflow-hidden"
             >
-              <div className="mt-3 pt-3 border-t border-violet-50">
+              <div className="mt-3 pt-3 border-t border-violet-900/30">
                 <p className="font-body text-xs text-slate-400">
                   Condition: <span className="font-mono text-trust-electric">{rule.rule?.condition}</span>
                 </p>

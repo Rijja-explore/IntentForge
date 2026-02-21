@@ -33,11 +33,11 @@ function PageTransition({ children }) {
 
 /* ─── Animated ambient orbs (background layer) ───────────────────── */
 const ORB_CONFIGS = [
-  { w: 700, h: 700, top: '-15%', left: '-8%',  color: 'rgba(124,58,237,0.09)',  dur: 22, delay: 0 },
-  { w: 550, h: 550, top: '45%',  right: '-6%', color: 'rgba(249,115,22,0.07)',  dur: 28, delay: 6 },
-  { w: 450, h: 450, bottom: '-8%', left: '25%', color: 'rgba(192,38,211,0.07)', dur: 20, delay: 11 },
-  { w: 350, h: 350, top: '15%',  left: '55%',  color: 'rgba(124,58,237,0.05)', dur: 25, delay: 4 },
-  { w: 250, h: 250, top: '60%',  left: '10%',  color: 'rgba(249,115,22,0.06)', dur: 18, delay: 8 },
+  { w: 700, h: 700, top: '-15%', left: '-8%',  color: 'rgba(124,58,237,0.22)',  dur: 22, delay: 0 },
+  { w: 550, h: 550, top: '45%',  right: '-6%', color: 'rgba(249,115,22,0.18)',  dur: 28, delay: 6 },
+  { w: 450, h: 450, bottom: '-8%', left: '25%', color: 'rgba(192,38,211,0.18)', dur: 20, delay: 11 },
+  { w: 350, h: 350, top: '15%',  left: '55%',  color: 'rgba(124,58,237,0.14)', dur: 25, delay: 4 },
+  { w: 250, h: 250, top: '60%',  left: '10%',  color: 'rgba(249,115,22,0.15)', dur: 18, delay: 8 },
 ];
 
 function FloatingOrbs() {

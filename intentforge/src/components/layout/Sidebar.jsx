@@ -18,10 +18,11 @@ export default function Sidebar() {
       initial={{ x: -80, opacity: 0 }}
       animate={{ x: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
-      className="hidden md:flex flex-col w-20 lg:w-64 h-screen fixed left-0 top-0 z-40 bg-white"
+      className="hidden md:flex flex-col w-20 lg:w-64 h-screen fixed left-0 top-0 z-40"
       style={{
-        borderRight: '1px solid rgba(124,58,237,0.08)',
-        boxShadow: '4px 0 24px rgba(124,58,237,0.06)',
+        background: 'linear-gradient(180deg, #06091A 0%, #0A0F28 100%)',
+        borderRight: '1px solid rgba(167,139,250,0.12)',
+        boxShadow: '4px 0 24px rgba(124,58,237,0.15)',
       }}
     >
       {/* Aurora left-edge accent line */}
@@ -31,7 +32,7 @@ export default function Sidebar() {
       />
 
       {/* Logo */}
-      <div className="flex items-center gap-3 px-5 py-6" style={{ borderBottom: '1px solid rgba(124,58,237,0.08)' }}>
+      <div className="flex items-center gap-3 px-5 py-6" style={{ borderBottom: '1px solid rgba(167,139,250,0.1)' }}>
         <motion.div
           animate={{ rotate: 360 }}
           transition={{ duration: 10, repeat: Infinity, ease: 'linear' }}
@@ -49,7 +50,7 @@ export default function Sidebar() {
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.3 }}
             className="font-display font-bold text-lg leading-tight"
-            style={{ color: '#1E0A3C' }}
+            style={{ color: '#F1F5F9' }}
           >
             IntentForge
           </motion.h1>
@@ -121,7 +122,7 @@ export default function Sidebar() {
                   {/* Label */}
                   <span
                     className="hidden lg:block font-body font-medium text-sm transition-colors duration-200"
-                    style={{ color: isActive ? '#1E0A3C' : '#94A3B8' }}
+                    style={{ color: isActive ? '#F1F5F9' : '#64748B' }}
                   >
                     {item.label}
                   </span>
@@ -136,8 +137,8 @@ export default function Sidebar() {
       <div
         className="px-3 py-4 mx-3 mb-4 rounded-2xl"
         style={{
-          background: 'linear-gradient(135deg, rgba(124,58,237,0.08) 0%, rgba(249,115,22,0.06) 100%)',
-          border: '1px solid rgba(124,58,237,0.12)',
+          background: 'linear-gradient(135deg, rgba(124,58,237,0.15) 0%, rgba(249,115,22,0.10) 100%)',
+          border: '1px solid rgba(167,139,250,0.15)',
         }}
       >
         <div className="flex items-center gap-3">
@@ -151,7 +152,7 @@ export default function Sidebar() {
             <Wallet size={16} className="text-white" />
           </div>
           <div className="hidden lg:block">
-            <p className="text-xs font-body text-slate-400">Wallet Balance</p>
+            <p className="text-xs font-body text-slate-500">Wallet Balance</p>
             <p className="text-sm font-mono font-bold" style={{ color: '#F97316' }}>₹50,000</p>
           </div>
           <motion.div

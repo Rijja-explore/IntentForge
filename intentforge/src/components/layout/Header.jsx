@@ -30,11 +30,11 @@ export default function Header({ title = 'Dashboard' }) {
       transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
       className="sticky top-0 z-30 flex items-center justify-between px-6 py-4"
       style={{
-        background: 'rgba(250,250,254,0.92)',
+        background: 'rgba(4,6,14,0.92)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderBottom: '1px solid rgba(124,58,237,0.08)',
-        boxShadow: '0 4px 24px rgba(124,58,237,0.06)',
+        borderBottom: '1px solid rgba(167,139,250,0.1)',
+        boxShadow: '0 4px 24px rgba(124,58,237,0.2)',
       }}
     >
       {/* Left: Title + Greeting */}
@@ -42,7 +42,7 @@ export default function Header({ title = 'Dashboard' }) {
         <div className="flex items-center gap-2">
           <h2
             className="font-display font-bold text-2xl"
-            style={{ color: '#1E0A3C', letterSpacing: '-0.02em' }}
+            style={{ color: '#F1F5F9', letterSpacing: '-0.02em' }}
           >
             {title}
           </h2>
@@ -56,7 +56,7 @@ export default function Header({ title = 'Dashboard' }) {
           )}
         </div>
         <div className="flex items-center gap-2 mt-0.5">
-          <p className="text-xs font-body text-slate-400">{greeting}, Prasad</p>
+          <p className="text-xs font-body text-slate-500">{greeting}, Prasad</p>
           <span className="text-slate-300">·</span>
           <LiveClock />
         </div>
@@ -69,8 +69,8 @@ export default function Header({ title = 'Dashboard' }) {
           whileFocus={{ scale: 1.02 }}
           className="hidden md:flex items-center gap-2 px-4 py-2.5 rounded-xl cursor-pointer"
           style={{
-            background: 'rgba(124,58,237,0.05)',
-            border: '1px solid rgba(124,58,237,0.1)',
+            background: 'rgba(167,139,250,0.08)',
+            border: '1px solid rgba(167,139,250,0.15)',
           }}
         >
           <Search size={15} className="text-slate-400" />
@@ -85,9 +85,9 @@ export default function Header({ title = 'Dashboard' }) {
           whileHover={{ scale: 1.05 }}
           className="hidden sm:flex items-center gap-2 px-3 py-2 rounded-xl"
           style={{
-            background: 'rgba(5,150,105,0.08)',
-            border: '1px solid rgba(5,150,105,0.2)',
-            boxShadow: '0 0 16px rgba(5,150,105,0.12)',
+            background: 'rgba(52,211,153,0.1)',
+            border: '1px solid rgba(52,211,153,0.25)',
+            boxShadow: '0 0 16px rgba(52,211,153,0.2)',
           }}
         >
           <motion.div
@@ -108,8 +108,8 @@ export default function Header({ title = 'Dashboard' }) {
             onClick={() => setShowNotif(!showNotif)}
             className="relative p-2.5 rounded-xl min-h-[44px] min-w-[44px] flex items-center justify-center"
             style={{
-              background: 'rgba(124,58,237,0.06)',
-              border: '1px solid rgba(124,58,237,0.1)',
+              background: 'rgba(167,139,250,0.1)',
+              border: '1px solid rgba(167,139,250,0.15)',
             }}
             aria-label="Notifications"
           >

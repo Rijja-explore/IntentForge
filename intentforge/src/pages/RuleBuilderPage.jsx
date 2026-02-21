@@ -59,7 +59,7 @@ export default function RuleBuilderPage() {
             <GlassCard hover={false} glow glowColor="blue">
               <div className="flex items-center gap-3 mb-5">
                 <Settings2 size={22} className="text-trust-electric" />
-                <h3 className="font-display font-bold text-xl text-violet-950">Create New Rule</h3>
+                <h3 className="font-display font-bold text-xl text-slate-100">Create New Rule</h3>
               </div>
               <RuleBuilder onRuleCreated={handleRuleCreated} />
             </GlassCard>
@@ -68,7 +68,7 @@ export default function RuleBuilderPage() {
 
         {/* Active Rules */}
         <div>
-          <h3 className="font-display font-semibold text-lg text-violet-950 mb-4">Your Rules</h3>
+          <h3 className="font-display font-semibold text-lg text-slate-100 mb-4">Your Rules</h3>
           <motion.div
             variants={containerVariants}
             initial="hidden"

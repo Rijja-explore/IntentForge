@@ -4,9 +4,9 @@ import { SPENDING_DATA } from '../../utils/constants';
 const CustomTooltip = ({ active, payload }) => {
   if (!active || !payload?.length) return null;
   return (
-    <div className="bg-white border border-violet-100 rounded-xl px-4 py-3 shadow-glass">
+    <div className="rounded-xl px-4 py-3 shadow-glass" style={{ background: 'rgba(14,19,42,0.95)', border: '1px solid rgba(167,139,250,0.2)' }}>
       <p className="font-body text-xs text-slate-400 mb-1">{payload[0].name}</p>
-      <p className="font-mono font-bold text-violet-950">₹{payload[0].value.toLocaleString('en-IN')}</p>
+      <p className="font-mono font-bold text-slate-100">₹{payload[0].value.toLocaleString('en-IN')}</p>
     </div>
   );
 };

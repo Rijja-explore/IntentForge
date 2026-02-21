@@ -55,7 +55,7 @@ export default function GlassCard({
         onClick={onClick}
         className={`
           glass-card relative overflow-hidden
-          bg-white border border-violet-100 rounded-2xl p-6
+          border rounded-2xl p-6
           shadow-glass
           ${glow ? glowClasses[glowColor] : ''}
           ${onClick ? 'cursor-pointer' : ''}
@@ -63,13 +63,13 @@ export default function GlassCard({
         `}
       >
         {/* Inner top highlight */}
-        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-200 to-transparent opacity-60 pointer-events-none" />
+        <div className="absolute top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-violet-500/20 to-transparent opacity-40 pointer-events-none" />
 
         {/* Gradient border overlay when gradient=true */}
         {gradient && (
           <div className="absolute inset-0 rounded-2xl pointer-events-none"
             style={{
-              background: 'linear-gradient(135deg, rgba(124,58,237,0.06) 0%, rgba(192,38,211,0.04) 50%, rgba(249,115,22,0.06) 100%)',
+              background: 'linear-gradient(135deg, rgba(124,58,237,0.12) 0%, rgba(192,38,211,0.08) 50%, rgba(249,115,22,0.12) 100%)',
             }}
           />
         )}

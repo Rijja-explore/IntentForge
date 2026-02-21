@@ -53,7 +53,7 @@ export default function ChatPanel({ isOpen, onClose }) {
             exit="exit"
             className="fixed bottom-24 right-4 md:right-6 z-50 w-[calc(100vw-2rem)] max-w-sm"
           >
-            <div className="bg-white border border-violet-100 rounded-3xl overflow-hidden shadow-2xl">
+            <div className="border border-violet-900/40 rounded-3xl overflow-hidden shadow-2xl" style={{ background: 'rgba(10,14,30,0.97)' }}>
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-gradient-primary">
                 <div className="flex items-center gap-3">
@@ -93,7 +93,7 @@ export default function ChatPanel({ isOpen, onClose }) {
                       max-w-[85%] px-4 py-3 rounded-2xl text-sm font-body leading-relaxed
                       ${msg.role === 'user'
                         ? 'bg-trust-electric text-white rounded-br-sm'
-                        : 'bg-violet-50 border border-violet-100 text-violet-950 rounded-bl-sm'
+                        : 'bg-violet-900/30 border border-violet-800/30 text-slate-100 rounded-bl-sm'
                       }
                     `}>
                       {msg.text}
@@ -106,7 +106,7 @@ export default function ChatPanel({ isOpen, onClose }) {
                     animate={{ opacity: 1 }}
                     className="flex justify-start"
                   >
-                    <div className="bg-violet-50 border border-violet-100 px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1">
+                    <div className="bg-violet-900/30 border border-violet-800/30 px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1">
                       {[0, 1, 2].map(i => (
                         <motion.div
                           key={i}
@@ -123,13 +123,13 @@ export default function ChatPanel({ isOpen, onClose }) {
 
               {/* Voice + Input */}
               <div className="px-4 pb-4">
-                <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-violet-50 border border-violet-100">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-violet-900/20 border border-violet-800/30">
                   <input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && sendMessage(input)}
                     placeholder="Ask me anything..."
-                    className="flex-1 bg-transparent text-sm font-body text-violet-950 placeholder-slate-400 outline-none"
+                    className="flex-1 bg-transparent text-sm font-body text-slate-100 placeholder-slate-400 outline-none"
                   />
                   <motion.button
                     whileHover={{ scale: 1.1 }}

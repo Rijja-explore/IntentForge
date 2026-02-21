@@ -76,7 +76,7 @@ export default function Settings() {
               P
             </div>
             <div>
-              <h3 className="font-display font-bold text-xl text-violet-950">Prasad K.</h3>
+              <h3 className="font-display font-bold text-xl text-slate-100">Prasad K.</h3>
               <p className="font-body text-sm text-slate-400">prasad@intentforge.in</p>
               <div className="flex items-center gap-1.5 mt-1">
                 <div className="w-2 h-2 rounded-full bg-success-emerald" />
@@ -100,13 +100,13 @@ export default function Settings() {
                   <div className="p-2 rounded-xl" style={{ background: `${group.hex}15` }}>
                     <group.icon size={18} style={{ color: group.hex }} />
                   </div>
-                  <h3 className="font-display font-semibold text-lg text-violet-950">{group.title}</h3>
+                  <h3 className="font-display font-semibold text-lg text-slate-100">{group.title}</h3>
                 </div>
                 <div className="space-y-4">
                   {group.items.map((item) => (
                     <div key={item.label} className="flex items-center justify-between gap-4">
                       <div>
-                        <p className="font-body font-medium text-sm text-violet-950">{item.label}</p>
+                        <p className="font-body font-medium text-sm text-slate-100">{item.label}</p>
                         <p className="font-body text-xs text-slate-400 mt-0.5">{item.description}</p>
                       </div>
                       <ToggleSwitch value={settings[item.label]} onChange={() => toggle(item.label)} />

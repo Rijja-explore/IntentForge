@@ -89,7 +89,7 @@ export default function TrustScoreGauge({ score = 87, previousScore = 82 }) {
           <circle
             cx="60" cy="60" r={radius}
             fill="none"
-            stroke="rgba(124,58,237,0.06)"
+            stroke="rgba(167,139,250,0.1)"
             strokeWidth="10"
           />
 
@@ -97,7 +97,7 @@ export default function TrustScoreGauge({ score = 87, previousScore = 82 }) {
           <circle
             cx="60" cy="60" r="42"
             fill="none"
-            stroke="rgba(124,58,237,0.04)"
+            stroke="rgba(167,139,250,0.07)"
             strokeWidth="2"
           />
 
@@ -151,7 +151,7 @@ export default function TrustScoreGauge({ score = 87, previousScore = 82 }) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             transition={{ delay: 1.5, type: 'spring', stiffness: 200, damping: 12 }}
             className="font-mono font-bold text-4xl"
-            style={{ color: '#1E0A3C', letterSpacing: '-0.02em' }}
+            style={{ color: '#F1F5F9', letterSpacing: '-0.02em' }}
           >
             {score}
           </motion.span>

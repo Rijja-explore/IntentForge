@@ -24,10 +24,10 @@ export default function TransactionCard({ transaction }) {
       className={`
         flex items-center gap-4 p-4 rounded-xl border transition-colors
         ${transaction.status === 'approved'
-          ? 'bg-success-emerald/5 border-success-emerald/20'
+          ? 'bg-success-emerald/10 border-success-emerald/25'
           : transaction.status === 'blocked'
-          ? 'bg-danger-crimson/5 border-danger-crimson/20'
-          : 'bg-warning-amber/5 border-warning-amber/20'
+          ? 'bg-danger-crimson/10 border-danger-crimson/25'
+          : 'bg-warning-amber/10 border-warning-amber/25'
         }
       `}
     >
@@ -42,9 +42,9 @@ export default function TransactionCard({ transaction }) {
       {/* Details */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <p className="font-body font-semibold text-sm text-violet-950 truncate">{transaction.merchant}</p>
+          <p className="font-body font-semibold text-sm text-slate-100 truncate">{transaction.merchant}</p>
           <p className={`font-mono font-bold text-sm flex-shrink-0 ${
-            transaction.status === 'blocked' ? 'line-through text-slate-400' : 'text-violet-950'
+            transaction.status === 'blocked' ? 'line-through text-slate-400' : 'text-slate-100'
           }`}>
             {formatAmount(transaction.amount)}
           </p>
@@ -54,7 +54,7 @@ export default function TransactionCard({ transaction }) {
           <StatusBadge status={transaction.status} />
         </div>
         {transaction.timestamp && (
-          <p className="font-body text-xs text-slate-300 mt-0.5">
+          <p className="font-body text-xs text-slate-500 mt-0.5">
             {formatRelativeTime(transaction.timestamp)}
           </p>
         )}

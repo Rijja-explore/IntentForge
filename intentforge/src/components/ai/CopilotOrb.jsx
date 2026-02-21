@@ -103,9 +103,9 @@ export default function CopilotOrb() {
               exit={{ opacity: 0, x: 10, scale: 0.8 }}
               className="absolute right-full mr-3 top-1/2 -translate-y-1/2 whitespace-nowrap"
             >
-              <div className="flex items-center gap-1.5 bg-white border border-violet-100 shadow-glass rounded-full px-3 py-1.5">
+              <div className="flex items-center gap-1.5 border shadow-glass rounded-full px-3 py-1.5" style={{ background: 'rgba(14,19,42,0.9)', borderColor: 'rgba(167,139,250,0.2)' }}>
                 <Brain size={12} className="text-trust-electric" />
-                <span className="text-xs font-body font-semibold text-violet-950">AI Copilot</span>
+                <span className="text-xs font-body font-semibold text-slate-100">AI Copilot</span>
               </div>
             </motion.div>
           )}

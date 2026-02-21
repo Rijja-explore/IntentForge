@@ -76,7 +76,7 @@ export default function RuleBuilder({ onRuleCreated }) {
                 <input
                   value={ruleName}
                   onChange={(e) => setRuleName(e.target.value)}
-                  className="bg-transparent font-display font-bold text-xl text-violet-950 outline-none border-b border-violet-100 focus:border-trust-electric pb-1 w-full"
+                  className="bg-transparent font-display font-bold text-xl text-slate-100 outline-none border-b border-violet-100 focus:border-trust-electric pb-1 w-full"
                 />
                 <p className="font-body text-sm text-slate-400 mt-1">{selectedTemplate.description}</p>
               </div>

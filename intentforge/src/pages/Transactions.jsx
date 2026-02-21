@@ -32,15 +32,15 @@ export default function Transactions() {
         <GlassCard hover={false}>
           <div className="flex items-center gap-3 mb-4">
             <BarChart2 size={20} className="text-trust-electric" />
-            <h3 className="font-display font-semibold text-lg text-violet-950">Weekly Overview</h3>
+            <h3 className="font-display font-semibold text-lg text-slate-100">Weekly Overview</h3>
           </div>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={weeklyData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
               <XAxis dataKey="day" tick={{ fill: '#64748B', fontSize: 12 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: '#94A3B8', fontSize: 11 }} axisLine={false} tickLine={false} />
               <Tooltip
-                contentStyle={{ background: '#FFFFFF', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '12px' }}
-                labelStyle={{ color: '#1E0A3C' }}
+                contentStyle={{ background: 'rgba(14,19,42,0.95)', border: '1px solid rgba(167,139,250,0.2)', borderRadius: '12px' }}
+                labelStyle={{ color: '#F1F5F9' }}
                 formatter={(v) => `₹${v.toLocaleString('en-IN')}`}
               />
               <Bar dataKey="approved" fill="#10B981" radius={[4, 4, 0, 0]} />
@@ -66,7 +66,7 @@ export default function Transactions() {
 
         {/* History */}
         <GlassCard hover={false}>
-          <h3 className="font-display font-semibold text-lg text-violet-950 mb-4">Transaction History</h3>
+          <h3 className="font-display font-semibold text-lg text-slate-100 mb-4">Transaction History</h3>
           <FilterBar onFilter={setFilter} />
           <div className="mt-4 space-y-3">
             {filtered.length === 0 ? (

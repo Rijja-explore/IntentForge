@@ -8,10 +8,8 @@ export default function SuggestionCard({ suggestion, onAction }) {
     <motion.div
       variants={cardVariants}
       whileHover={{ scale: 1.02 }}
-      className="
-        bg-white border border-violet-100
-        rounded-2xl p-5 shadow-glass
-      "
+      className="rounded-2xl p-5 shadow-glass"
+      style={{ background: 'rgba(14,19,42,0.85)', border: '1px solid rgba(167,139,250,0.15)' }}
     >
       <div className="flex items-start gap-3">
         <div className="w-10 h-10 rounded-xl bg-trust-electric/20 flex items-center justify-center flex-shrink-0">
@@ -19,7 +17,7 @@ export default function SuggestionCard({ suggestion, onAction }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h4 className="font-display font-semibold text-violet-950 text-sm">{suggestion.title}</h4>
+            <h4 className="font-display font-semibold text-slate-100 text-sm">{suggestion.title}</h4>
             <span className="text-xs font-mono text-trust-electric bg-trust-electric/10 px-2 py-0.5 rounded-full flex-shrink-0">
               {suggestion.confidence}% sure
             </span>

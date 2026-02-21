@@ -88,10 +88,12 @@ export default function QuickStats() {
             y: -4,
             boxShadow: `0 12px 40px ${stat.bg.replace('0.08', '0.25')}, 0 4px 12px rgba(0,0,0,0.06)`,
           }}
-          className="relative overflow-hidden bg-white border rounded-2xl p-5 cursor-default"
+          className="relative overflow-hidden border rounded-2xl p-5 cursor-default"
           style={{
             borderColor: stat.border,
-            boxShadow: `0 1px 3px rgba(0,0,0,0.04), 0 4px 16px ${stat.bg}`,
+            boxShadow: `0 1px 3px rgba(0,0,0,0.3), 0 4px 20px ${stat.bg}`,
+            background: 'rgba(14,19,42,0.85)',
+            backdropFilter: 'blur(20px)',
           }}
         >
           {/* Background gradient blob */}
@@ -120,7 +122,7 @@ export default function QuickStats() {
           </motion.p>
 
           {/* Label */}
-          <p className="font-body text-sm font-medium text-violet-950 mt-1">{stat.label}</p>
+          <p className="font-body text-sm font-medium text-slate-100 mt-1">{stat.label}</p>
           <p className="font-body text-xs text-slate-400 mt-0.5">{stat.change}</p>
 
           {/* Bottom shine line */}

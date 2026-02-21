@@ -21,7 +21,7 @@ function SectionHeader({ icon: Icon, title, subtitle, color = '#7C3AED' }) {
         <Icon size={16} style={{ color }} />
       </div>
       <div>
-        <h3 className="font-display font-bold text-base text-violet-950">{title}</h3>
+        <h3 className="font-display font-bold text-base text-slate-100">{title}</h3>
         {subtitle && <p className="text-xs font-body text-slate-400 mt-0.5">{subtitle}</p>}
       </div>
     </div>

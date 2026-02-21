@@ -50,10 +50,10 @@ export default function ParticleBackground() {
         particles: {
           number: { value: 80, density: { enable: true, area: 900 } },
           color: {
-            value: ['#7C3AED', '#C026D3', '#F97316', '#EA580C', '#3B0764'],
+            value: ['#A78BFA', '#C084FC', '#FB923C', '#F97316', '#67E8F9'],
             animation: {
               enable: true,
-              speed: 20,
+              speed: 15,
               sync: false,
             },
           },
@@ -64,7 +64,7 @@ export default function ParticleBackground() {
             },
           },
           opacity: {
-            value: { min: 0.08, max: 0.35 },
+            value: { min: 0.2, max: 0.6 },
             animation: {
               enable: true,
               speed: 0.8,
@@ -80,14 +80,14 @@ export default function ParticleBackground() {
             },
           },
           links: {
-            color: { value: ['#7C3AED', '#C026D3', '#F97316'] },
+            color: { value: ['#A78BFA', '#C084FC', '#FB923C'] },
             distance: 130,
             enable: true,
-            opacity: 0.12,
+            opacity: 0.2,
             width: 1,
             triangles: {
               enable: true,
-              opacity: 0.03,
+              opacity: 0.06,
             },
           },
           move: {

@@ -14,8 +14,8 @@ export default function AnimatedButton({
   const variants = {
     primary: 'bg-gradient-primary text-white shadow-glow-blue',
     money: 'bg-gradient-money text-white shadow-glow-gold font-bold',
-    outline: 'border-2 border-trust-electric text-trust-electric bg-white hover:bg-violet-50',
-    ghost: 'text-trust-electric bg-violet-50 hover:bg-violet-100',
+    outline: 'border-2 border-trust-electric text-trust-electric hover:bg-trust-electric/10',
+    ghost: 'text-trust-electric bg-trust-electric/10 hover:bg-trust-electric/20',
     danger: 'bg-danger-crimson/10 text-danger-crimson border border-danger-crimson/30',
     success: 'bg-success-emerald/10 text-success-emerald border border-success-emerald/30',
   };

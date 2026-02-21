@@ -16,7 +16,7 @@ export default function InsightsPanel({ onApply }) {
           <Brain size={20} className="text-trust-electric" />
         </motion.div>
         <div>
-          <h3 className="font-display font-semibold text-violet-950">AI Recommendations</h3>
+          <h3 className="font-display font-semibold text-slate-100">AI Recommendations</h3>
           <p className="font-body text-xs text-slate-400">Based on your spending patterns</p>
         </div>
         <div className="ml-auto flex items-center gap-1.5 text-xs font-body text-money-gold">

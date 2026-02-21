@@ -32,11 +32,11 @@ export default function LiveFeed({ maxItems = 10 }) {
     <div>
       <div className="flex items-center justify-between mb-5">
         <div className="flex items-center gap-3">
-          <div className="p-2 rounded-xl bg-violet-50">
+          <div className="p-2 rounded-xl bg-violet-900/30">
             <Activity size={18} className="text-trust-electric" />
           </div>
           <div>
-            <h3 className="font-display font-semibold text-lg text-violet-950">Live Feed</h3>
+            <h3 className="font-display font-semibold text-lg text-slate-100">Live Feed</h3>
             <div className="flex items-center gap-1.5">
               <motion.div
                 animate={{ opacity: paused ? 0.3 : [1, 0.3, 1] }}
@@ -54,7 +54,7 @@ export default function LiveFeed({ maxItems = 10 }) {
           className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-body font-semibold border transition-colors ${
             paused
               ? 'bg-trust-electric text-white border-trust-electric'
-              : 'bg-violet-50 text-slate-500 border-violet-100 hover:border-trust-electric'
+              : 'bg-violet-900/20 text-slate-400 border-violet-800/30 hover:border-trust-electric'
           }`}
         >
           {paused ? <Wifi size={14} /> : <WifiOff size={14} />}

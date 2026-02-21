@@ -25,11 +25,12 @@ export default function TemplateSelector({ onSelect }) {
               whileHover={{ scale: 1.02, boxShadow: '0 8px 24px rgba(124,58,237,0.1)' }}
               whileTap={{ scale: 0.98 }}
               onClick={() => onSelect(template)}
-              className={`flex items-start gap-3 p-4 rounded-xl bg-white border ${colors.border} text-left group shadow-glass`}
+              className={`flex items-start gap-3 p-4 rounded-xl border ${colors.border} text-left group shadow-glass`}
+              style={{ background: 'rgba(14,19,42,0.7)' }}
             >
               <span className="text-2xl flex-shrink-0 mt-0.5">{template.icon}</span>
               <div className="flex-1 min-w-0">
-                <p className={`font-body font-semibold text-sm text-violet-950`}>{template.title}</p>
+                <p className={`font-body font-semibold text-sm text-slate-100`}>{template.title}</p>
                 <p className="font-body text-xs text-slate-400 mt-1">{template.description}</p>
               </div>
               <motion.div

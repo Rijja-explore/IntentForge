@@ -76,15 +76,15 @@ export default function AIInsights() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Spending trend */}
           <GlassCard hover={false}>
-            <h3 className="font-display font-semibold text-lg text-violet-950 mb-4">Spending vs Savings Trend</h3>
+            <h3 className="font-display font-semibold text-lg text-slate-100 mb-4">Spending vs Savings Trend</h3>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={spendingTrend}>
                 <CartesianGrid strokeDasharray="3 3" stroke="rgba(124,58,237,0.08)" />
                 <XAxis dataKey="week" tick={{ fill: '#64748B', fontSize: 12 }} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fill: '#94A3B8', fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ background: '#FFFFFF', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '12px' }}
-                  labelStyle={{ color: '#1E0A3C' }}
+                  contentStyle={{ background: 'rgba(14,19,42,0.95)', border: '1px solid rgba(167,139,250,0.2)', borderRadius: '12px' }}
+                  labelStyle={{ color: '#F1F5F9' }}
                   formatter={(v) => `₹${v.toLocaleString('en-IN')}`}
                 />
                 <Line type="monotone" dataKey="amount" stroke="#FF6B00" strokeWidth={2} dot={{ fill: '#FF6B00' }} name="Spending" />
@@ -95,7 +95,7 @@ export default function AIInsights() {
 
           {/* Voice Commands */}
           <GlassCard hover={false}>
-            <h3 className="font-display font-semibold text-lg text-violet-950 mb-6">Voice Commands</h3>
+            <h3 className="font-display font-semibold text-lg text-slate-100 mb-6">Voice Commands</h3>
             <VoiceInput onResult={handleVoiceCommand} />
             <div className="mt-6 space-y-2">
               <p className="font-body text-xs text-slate-400 font-semibold uppercase tracking-wider">Try saying:</p>

@@ -13,7 +13,7 @@ const navItems = [
 export default function MobileNav() {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50
-      bg-white/95 backdrop-blur-xl border-t border-violet-100
+      bg-[#04060E]/95 backdrop-blur-xl border-t border-violet-900/30
       flex items-center justify-around px-2 py-2"
     >
       {navItems.map((item) => (
@@ -33,7 +33,7 @@ export default function MobileNav() {
                 {isActive ? (
                   <motion.div
                     layoutId="mobileActive"
-                    className="p-1.5 rounded-lg bg-violet-50"
+                    className="p-1.5 rounded-lg bg-violet-900/40"
                   >
                     <item.icon size={20} />
                   </motion.div>
