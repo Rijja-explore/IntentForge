@@ -19,13 +19,13 @@ const weeklyData = [
   { day: 'Sun', approved: 3100, blocked: 0 },
 ];
 
-export default function Transactions() {
+export default function Transactions({ sidebarOpen, onMenuOpen }) {
   const [filter, setFilter] = useState('all');
   const filtered = filter === 'all' ? DEMO_TRANSACTIONS : DEMO_TRANSACTIONS.filter(t => t.status === filter);
 
   return (
     <div>
-      <Header title="Transactions" />
+      <Header title="Transactions" sidebarOpen={sidebarOpen} onMenuOpen={onMenuOpen} />
       <div className="p-4 md:p-6 space-y-6 pb-24 md:pb-6">
 
         {/* Weekly chart */}

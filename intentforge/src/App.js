@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useState } from 'react';
+import { Menu } from 'lucide-react';
 
 import Sidebar from './components/layout/Sidebar';
 import MobileNav from './components/layout/MobileNav';
@@ -76,16 +77,16 @@ function FloatingOrbs() {
 }
 
 /* ─── Routes with AnimatePresence ────────────────────────────────── */
-function AppRoutes() {
+function AppRoutes({ sidebarOpen, onMenuOpen }) {
   const location = useLocation();
   return (
     <AnimatePresence mode="wait">
       <Routes location={location} key={location.pathname}>
-        <Route path="/"            element={<PageTransition><Dashboard /></PageTransition>} />
-        <Route path="/rules"       element={<PageTransition><RuleBuilderPage /></PageTransition>} />
-        <Route path="/transactions" element={<PageTransition><Transactions /></PageTransition>} />
-        <Route path="/ai"          element={<PageTransition><AIInsights /></PageTransition>} />
-        <Route path="/settings"    element={<PageTransition><Settings /></PageTransition>} />
+        <Route path="/"             element={<PageTransition><Dashboard sidebarOpen={sidebarOpen} onMenuOpen={onMenuOpen} /></PageTransition>} />
+        <Route path="/rules"        element={<PageTransition><RuleBuilderPage sidebarOpen={sidebarOpen} onMenuOpen={onMenuOpen} /></PageTransition>} />
+        <Route path="/transactions" element={<PageTransition><Transactions sidebarOpen={sidebarOpen} onMenuOpen={onMenuOpen} /></PageTransition>} />
+        <Route path="/ai"           element={<PageTransition><AIInsights sidebarOpen={sidebarOpen} onMenuOpen={onMenuOpen} /></PageTransition>} />
+        <Route path="/settings"     element={<PageTransition><Settings sidebarOpen={sidebarOpen} onMenuOpen={onMenuOpen} /></PageTransition>} />
       </Routes>
     </AnimatePresence>
   );
@@ -94,10 +95,11 @@ function AppRoutes() {
 /* ─── Root App ───────────────────────────────────────────────────── */
 function App() {
   const [demoActive, setDemoActive] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   return (
     <BrowserRouter>
-      {/* Layer 1 – tsParticles canvas (z -10, fixed, pointer-events-none) */}
+      {/* Layer 1 – tsParticles canvas */}
       <ParticleBackground />
 
       {/* Layer 2 – slow animated gradient orbs */}
@@ -111,15 +113,46 @@ function App() {
 
       {/* Layer 5 – app chrome */}
       <div className="relative z-10 flex min-h-screen">
-        <Sidebar />
+        <Sidebar open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
 
-        <main className="flex-1 md:ml-20 lg:ml-64 min-h-screen overflow-x-hidden">
-          {/* Demo mode toggle */}
-          <div className="fixed top-4 right-20 z-30 hidden md:block">
-            <DemoModeToggle onToggle={setDemoActive} />
+        {/* Floating open-sidebar button when sidebar is closed (desktop) */}
+        <AnimatePresence>
+          {!sidebarOpen && (
+            <motion.button
+              initial={{ opacity: 0, x: -16 }}
+              animate={{ opacity: 1, x: 0 }}
+              exit={{ opacity: 0, x: -16 }}
+              whileHover={{ scale: 1.08 }}
+              whileTap={{ scale: 0.92 }}
+              onClick={() => setSidebarOpen(true)}
+              className="hidden md:flex fixed top-4 left-4 z-50 w-10 h-10 rounded-xl items-center justify-center"
+              style={{
+                background: 'rgba(14,19,42,0.9)',
+                border: '1px solid rgba(167,139,250,0.25)',
+                boxShadow: '0 4px 16px rgba(124,58,237,0.2)',
+              }}
+              aria-label="Open sidebar"
+            >
+              <Menu size={17} className="text-slate-300" />
+            </motion.button>
+          )}
+        </AnimatePresence>
+
+        <main
+          className={`flex-1 min-h-screen overflow-x-hidden ${sidebarOpen ? 'md:ml-20 lg:ml-64' : ''}`}
+          style={{ transition: 'margin-left 0.3s cubic-bezier(0.22,1,0.36,1)' }}
+        >
+          <div className="min-h-screen">
+            {/* Demo mode toggle */}
+            <div className="fixed top-4 right-20 z-30 hidden md:block">
+              <DemoModeToggle onToggle={setDemoActive} />
+            </div>
+
+            <AppRoutes
+              sidebarOpen={sidebarOpen}
+              onMenuOpen={() => setSidebarOpen(true)}
+            />
           </div>
-
-          <AppRoutes />
         </main>
 
         <MobileNav />

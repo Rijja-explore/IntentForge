@@ -28,12 +28,12 @@ function SectionHeader({ icon: Icon, title, subtitle, color = '#7C3AED' }) {
   );
 }
 
-export default function Dashboard() {
+export default function Dashboard({ sidebarOpen, onMenuOpen }) {
   const [balance] = useState(50000);
 
   return (
     <div className="relative min-h-screen">
-      <Header title="Dashboard" />
+      <Header title="Dashboard" sidebarOpen={sidebarOpen} onMenuOpen={onMenuOpen} />
       <div className="relative z-10 p-4 md:p-6 space-y-6 pb-24 md:pb-6">
 
         {/* Balance Hero */}

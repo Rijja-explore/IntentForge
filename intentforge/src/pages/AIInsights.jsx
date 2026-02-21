@@ -15,14 +15,14 @@ const spendingTrend = [
   { week: 'W5', amount: 11000, saved: 9200 },
 ];
 
-export default function AIInsights() {
+export default function AIInsights({ sidebarOpen, onMenuOpen }) {
   const handleVoiceCommand = (transcript) => {
     console.log('Voice command:', transcript);
   };
 
   return (
     <div>
-      <Header title="AI Insights" />
+      <Header title="AI Insights" sidebarOpen={sidebarOpen} onMenuOpen={onMenuOpen} />
       <div className="p-4 md:p-6 space-y-6 pb-24 md:pb-6">
 
         {/* AI Hero */}

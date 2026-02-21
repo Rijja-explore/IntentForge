@@ -15,7 +15,7 @@ const initialRules = RULE_TEMPLATES.slice(0, 3).map((t, i) => ({
   active: i !== 1,
 }));
 
-export default function RuleBuilderPage() {
+export default function RuleBuilderPage({ sidebarOpen, onMenuOpen }) {
   const [rules, setRules] = useState(initialRules);
   const [showBuilder, setShowBuilder] = useState(false);
 
@@ -30,7 +30,7 @@ export default function RuleBuilderPage() {
 
   return (
     <div>
-      <Header title="Rule Builder" />
+      <Header title="Rule Builder" sidebarOpen={sidebarOpen} onMenuOpen={onMenuOpen} />
       <div className="p-4 md:p-6 space-y-6 pb-24 md:pb-6">
 
         {/* Header actions */}

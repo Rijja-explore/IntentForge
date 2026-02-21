@@ -54,7 +54,7 @@ function ToggleSwitch({ value, onChange }) {
   );
 }
 
-export default function Settings() {
+export default function Settings({ sidebarOpen, onMenuOpen }) {
   const [settings, setSettings] = useState(
     settingsGroups.reduce((acc, group) => {
       group.items.forEach(item => { acc[item.label] = item.value; });
@@ -66,7 +66,7 @@ export default function Settings() {
 
   return (
     <div>
-      <Header title="Settings" />
+      <Header title="Settings" sidebarOpen={sidebarOpen} onMenuOpen={onMenuOpen} />
       <div className="p-4 md:p-6 space-y-6 pb-24 md:pb-6">
 
         {/* Profile card */}
