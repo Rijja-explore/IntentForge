@@ -9,6 +9,7 @@ import CopilotOrb from './components/ai/CopilotOrb';
 import DemoModeToggle from './components/demo/DemoModeToggle';
 import AutoPlayDemo from './components/demo/AutoPlayDemo';
 import ParticleBackground from './components/shared/ParticleBackground';
+import CircuitOverlay from './components/shared/CircuitOverlay';
 
 import Dashboard from './pages/Dashboard';
 import RuleBuilderPage from './pages/RuleBuilderPage';
@@ -34,11 +35,12 @@ function PageTransition({ children }) {
 
 /* ─── Animated ambient orbs (background layer) ───────────────────── */
 const ORB_CONFIGS = [
-  { w: 700, h: 700, top: '-15%', left: '-8%',  color: 'rgba(124,58,237,0.22)',  dur: 22, delay: 0 },
-  { w: 550, h: 550, top: '45%',  right: '-6%', color: 'rgba(249,115,22,0.18)',  dur: 28, delay: 6 },
-  { w: 450, h: 450, bottom: '-8%', left: '25%', color: 'rgba(192,38,211,0.18)', dur: 20, delay: 11 },
-  { w: 350, h: 350, top: '15%',  left: '55%',  color: 'rgba(124,58,237,0.14)', dur: 25, delay: 4 },
-  { w: 250, h: 250, top: '60%',  left: '10%',  color: 'rgba(249,115,22,0.15)', dur: 18, delay: 8 },
+  { w: 700, h: 700, top: '-15%', left: '-8%',  color: 'rgba(124,58,237,0.25)',  dur: 22, delay: 0 },
+  { w: 600, h: 600, top: '45%',  right: '-6%', color: 'rgba(249,115,22,0.22)',  dur: 28, delay: 6 },
+  { w: 500, h: 500, bottom: '-8%', left: '25%', color: 'rgba(192,38,211,0.20)', dur: 20, delay: 11 },
+  { w: 380, h: 380, top: '15%',  left: '55%',  color: 'rgba(34,211,238,0.14)', dur: 25, delay: 4 },
+  { w: 300, h: 300, top: '60%',  left: '8%',   color: 'rgba(249,115,22,0.18)', dur: 18, delay: 8 },
+  { w: 280, h: 280, top: '30%',  right: '30%', color: 'rgba(34,211,238,0.10)', dur: 30, delay: 15 },
 ];
 
 function FloatingOrbs() {
@@ -105,11 +107,11 @@ function App() {
       {/* Layer 2 – slow animated gradient orbs */}
       <FloatingOrbs />
 
-      {/* Layer 3 – aurora color wash */}
+      {/* Layer 3 – full-spectrum aurora mesh */}
       <div className="aurora-bg" />
 
-      {/* Layer 4 – dot grid texture */}
-      <div className="dot-grid" />
+      {/* Layer 4 – PCB circuit trace overlay */}
+      <CircuitOverlay />
 
       {/* Layer 5 – app chrome */}
       <div className="relative z-10 flex min-h-screen">

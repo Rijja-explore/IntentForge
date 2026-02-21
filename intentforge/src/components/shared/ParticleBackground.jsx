@@ -45,8 +45,8 @@ export default function ParticleBackground() {
           },
         },
         particles: {
-          number: { value: 55, density: { enable: true, area: 1100 } },
-          color: { value: ['#A78BFA', '#C084FC', '#67E8F9', '#818CF8'] },
+          number: { value: 60, density: { enable: true, area: 1000 } },
+          color: { value: ['#A78BFA', '#C084FC', '#22D3EE', '#FB923C', '#67E8F9', '#F97316'] },
           shape: { type: 'circle' },
           opacity: {
             value: { min: 0.25, max: 0.65 },
