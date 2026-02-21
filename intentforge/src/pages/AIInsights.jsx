@@ -67,7 +67,7 @@ export default function AIInsights() {
                   <stat.icon size={20} className={`text-${stat.color}`} />
                 </div>
                 <p className={`font-mono font-bold text-2xl text-${stat.color}`}>{stat.value}</p>
-                <p className="font-body text-sm text-white/50 mt-1">{stat.label}</p>
+                <p className="font-body text-sm text-slate-400 mt-1">{stat.label}</p>
               </GlassCard>
             </motion.div>
           ))}
@@ -76,28 +76,29 @@ export default function AIInsights() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Spending trend */}
           <GlassCard hover={false}>
-            <h3 className="font-display font-semibold text-lg text-white mb-4">Spending vs Savings Trend</h3>
+            <h3 className="font-display font-semibold text-lg text-violet-950 mb-4">Spending vs Savings Trend</h3>
             <ResponsiveContainer width="100%" height={200}>
               <LineChart data={spendingTrend}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-                <XAxis dataKey="week" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} axisLine={false} tickLine={false} />
-                <YAxis tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(124,58,237,0.08)" />
+                <XAxis dataKey="week" tick={{ fill: '#64748B', fontSize: 12 }} axisLine={false} tickLine={false} />
+                <YAxis tick={{ fill: '#94A3B8', fontSize: 11 }} axisLine={false} tickLine={false} />
                 <Tooltip
-                  contentStyle={{ background: '#0F172A', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
+                  contentStyle={{ background: '#FFFFFF', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '12px' }}
+                  labelStyle={{ color: '#1E0A3C' }}
                   formatter={(v) => `₹${v.toLocaleString('en-IN')}`}
                 />
-                <Line type="monotone" dataKey="amount" stroke="#FF6B35" strokeWidth={2} dot={{ fill: '#FF6B35' }} name="Spending" />
-                <Line type="monotone" dataKey="saved" stroke="#06D6A0" strokeWidth={2} dot={{ fill: '#06D6A0' }} name="Saved" />
+                <Line type="monotone" dataKey="amount" stroke="#FF6B00" strokeWidth={2} dot={{ fill: '#FF6B00' }} name="Spending" />
+                <Line type="monotone" dataKey="saved" stroke="#10B981" strokeWidth={2} dot={{ fill: '#10B981' }} name="Saved" />
               </LineChart>
             </ResponsiveContainer>
           </GlassCard>
 
           {/* Voice Commands */}
           <GlassCard hover={false}>
-            <h3 className="font-display font-semibold text-lg text-white mb-6">Voice Commands</h3>
+            <h3 className="font-display font-semibold text-lg text-violet-950 mb-6">Voice Commands</h3>
             <VoiceInput onResult={handleVoiceCommand} />
             <div className="mt-6 space-y-2">
-              <p className="font-body text-xs text-white/40 font-semibold uppercase tracking-wider">Try saying:</p>
+              <p className="font-body text-xs text-slate-400 font-semibold uppercase tracking-wider">Try saying:</p>
               {[
                 '"Lock 5000 rupees for groceries"',
                 '"Block all gambling sites"',

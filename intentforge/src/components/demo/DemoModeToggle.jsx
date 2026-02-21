@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useEffect } from 'react';
-import { Play, Pause, Zap } from 'lucide-react';
+import { Zap } from 'lucide-react';
 
 export default function DemoModeToggle({ onToggle }) {
   const [active, setActive] = useState(false);
@@ -30,7 +30,7 @@ export default function DemoModeToggle({ onToggle }) {
         border transition-all duration-300 text-sm font-body font-semibold
         ${active
           ? 'bg-money-gold/20 border-money-gold text-money-gold shadow-glow-gold'
-          : 'bg-white/5 border-white/20 text-white/60'
+          : 'bg-violet-50 border-violet-100 text-slate-400'
         }
       `}
     >
@@ -42,7 +42,7 @@ export default function DemoModeToggle({ onToggle }) {
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0 }}
-            className="text-xs bg-money-gold text-neutral-charcoal px-1.5 py-0.5 rounded-full font-bold"
+            className="text-xs bg-money-gold text-white px-1.5 py-0.5 rounded-full font-bold"
           >
             ON
           </motion.span>

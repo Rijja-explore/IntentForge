@@ -45,9 +45,9 @@ export default function BalanceHero({ balance = 50000, change = 12.5, locked = 1
           <motion.div
             animate={{
               boxShadow: [
-                '0 0 20px rgba(255,184,28,0.3)',
-                '0 0 40px rgba(255,184,28,0.5)',
-                '0 0 20px rgba(255,184,28,0.3)',
+                '0 0 20px rgba(245,158,11,0.3)',
+                '0 0 40px rgba(245,158,11,0.5)',
+                '0 0 20px rgba(245,158,11,0.3)',
               ],
             }}
             transition={{ duration: 2, repeat: Infinity }}

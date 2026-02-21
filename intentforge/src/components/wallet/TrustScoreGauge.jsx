@@ -1,5 +1,6 @@
 import { motion } from 'framer-motion';
-import { Shield, TrendingUp, TrendingDown } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { TrendingUp, TrendingDown } from 'lucide-react';
 
 export default function TrustScoreGauge({ score = 87, previousScore = 82 }) {
   const circumference = 2 * Math.PI * 54;
@@ -7,75 +8,56 @@ export default function TrustScoreGauge({ score = 87, previousScore = 82 }) {
   const change = score - previousScore;
 
   const getColor = (s) => {
-    if (s >= 90) return '#06D6A0';
-    if (s >= 70) return '#3E92CC';
-    if (s >= 50) return '#FFA500';
-    return '#D00000';
+    if (s >= 90) return '#059669';
+    if (s >= 70) return '#7C3AED';
+    if (s >= 50) return '#D97706';
+    return '#DC2626';
   };
 
   const getLabel = (s) => {
     if (s >= 90) return 'Excellent';
     if (s >= 70) return 'Good';
     if (s >= 50) return 'Fair';
-    return 'At Risk';
+    return 'Poor';
   };
 
   const color = getColor(score);
+  const [animated, setAnimated] = useState(false);
+  useEffect(() => { setTimeout(() => setAnimated(true), 300); }, []);
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="relative">
-        <svg width="140" height="140" className="-rotate-90">
-          {/* Background circle */}
-          <circle
-            cx="70" cy="70" r="54"
-            fill="none"
-            stroke="rgba(255,255,255,0.05)"
-            strokeWidth="10"
-          />
-          {/* Progress circle */}
+    <div className="flex flex-col items-center gap-4">
+      <div className="relative w-36 h-36">
+        <svg className="w-full h-full -rotate-90" viewBox="0 0 120 120">
+          <circle cx="60" cy="60" r="54" fill="none" stroke="rgba(124,58,237,0.08)" strokeWidth="10" />
           <motion.circle
-            cx="70" cy="70" r="54"
+            cx="60" cy="60" r="54"
             fill="none"
             stroke={color}
             strokeWidth="10"
             strokeLinecap="round"
             strokeDasharray={circumference}
             initial={{ strokeDashoffset: circumference }}
-            animate={{ strokeDashoffset: offset }}
-            transition={{ duration: 1.5, delay: 0.5, ease: 'easeOut' }}
-            style={{ filter: `drop-shadow(0 0 8px ${color})` }}
+            animate={{ strokeDashoffset: animated ? offset : circumference }}
+            transition={{ duration: 1.5, ease: 'easeOut', delay: 0.3 }}
+            style={{ filter: `drop-shadow(0 0 6px ${color}60)` }}
           />
         </svg>
-
-        {/* Center content */}
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <Shield size={20} style={{ color }} />
-          <motion.span
-            initial={{ opacity: 0, scale: 0.5 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.8, type: 'spring' }}
-            className="font-mono font-bold text-3xl text-white mt-1"
-          >
-            {score}
-          </motion.span>
+          <span className="font-mono font-bold text-3xl text-violet-950">{score}</span>
+          <span className="font-body text-xs text-slate-400">{getLabel(score)}</span>
         </div>
       </div>
 
-      <div className="mt-3 text-center">
-        <p className="font-display font-semibold text-lg" style={{ color }}>
-          {getLabel(score)}
-        </p>
-        <div className="flex items-center gap-1 justify-center mt-1">
-          {change >= 0 ? (
-            <TrendingUp size={14} className="text-success-emerald" />
-          ) : (
-            <TrendingDown size={14} className="text-danger-crimson" />
-          )}
-          <span className={`text-xs font-body ${change >= 0 ? 'text-success-emerald' : 'text-danger-crimson'}`}>
-            {change >= 0 ? '+' : ''}{change} pts this week
-          </span>
-        </div>
+      <div className="flex items-center gap-1.5">
+        {change >= 0 ? (
+          <TrendingUp size={16} className="text-success-emerald" />
+        ) : (
+          <TrendingDown size={16} className="text-danger-crimson" />
+        )}
+        <span className={`font-body text-sm font-medium ${change >= 0 ? 'text-success-emerald' : 'text-danger-crimson'}`}>
+          {change >= 0 ? '+' : ''}{change} points this month
+        </span>
       </div>
     </div>
   );

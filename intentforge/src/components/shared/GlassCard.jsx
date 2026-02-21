@@ -19,13 +19,12 @@ export default function GlassCard({
     <motion.div
       whileHover={hover ? {
         scale: 1.02,
-        boxShadow: '0 20px 40px rgba(0, 0, 0, 0.3)'
+        boxShadow: '0 8px 32px rgba(124, 58, 237, 0.12), 0 2px 8px rgba(0,0,0,0.06)'
       } : {}}
       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
       onClick={onClick}
       className={`
-        backdrop-blur-md bg-gradient-glass
-        border border-white/10 rounded-2xl p-6
+        bg-white border border-violet-100 rounded-2xl p-6
         shadow-glass ${glow ? glowClasses[glowColor] : ''}
         ${onClick ? 'cursor-pointer' : ''}
         ${className}

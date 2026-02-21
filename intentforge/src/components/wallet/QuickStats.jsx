@@ -1,12 +1,12 @@
 import { motion } from 'framer-motion';
 import { containerVariants, cardVariants } from '../../utils/animations';
-import { ArrowUpRight, ArrowDownLeft, ShieldCheck, Zap } from 'lucide-react';
+import { IndianRupee, TrendingUp, TrendingDown, ShieldCheck } from 'lucide-react';
 
 const stats = [
-  { label: 'Money Saved', value: '₹8,500', change: '+12%', icon: ShieldCheck, color: 'success-emerald', positive: true },
-  { label: 'Spending', value: '₹23,400', change: '+5%', icon: ArrowUpRight, color: 'warning-amber', positive: false },
-  { label: 'Received', value: '₹35,000', change: '+3%', icon: ArrowDownLeft, color: 'trust-electric', positive: true },
-  { label: 'Active Rules', value: '5', change: '2 new', icon: Zap, color: 'money-gold', positive: true },
+  { label: 'Total Saved', value: '₹12,400', change: '+8%', icon: TrendingUp, color: 'success-emerald', bg: 'bg-success-emerald/10' },
+  { label: 'This Week', value: '₹8,900', change: '+12%', icon: IndianRupee, color: 'trust-electric', bg: 'bg-trust-electric/10' },
+  { label: 'Blocked', value: '₹3,200', change: '3 txns', icon: TrendingDown, color: 'danger-crimson', bg: 'bg-danger-crimson/10' },
+  { label: 'Rules Active', value: '5', change: '2 new', icon: ShieldCheck, color: 'money-gold', bg: 'bg-money-gold/10' },
 ];
 
 export default function QuickStats() {
@@ -21,19 +21,15 @@ export default function QuickStats() {
         <motion.div
           key={stat.label}
           variants={cardVariants}
-          whileHover={{ scale: 1.03 }}
-          className="backdrop-blur-md bg-gradient-glass border border-white/10 rounded-2xl p-4 shadow-glass"
+          whileHover={{ scale: 1.02, boxShadow: '0 8px 32px rgba(124, 58, 237, 0.12)' }}
+          className="bg-white border border-violet-100 rounded-2xl p-5 shadow-glass"
         >
-          <div className="flex items-start justify-between mb-3">
-            <div className={`p-2 rounded-lg bg-${stat.color}/10`}>
-              <stat.icon size={18} className={`text-${stat.color}`} />
-            </div>
-            <span className={`text-xs font-body font-medium ${stat.positive ? 'text-success-emerald' : 'text-warning-amber'}`}>
-              {stat.change}
-            </span>
+          <div className={`w-10 h-10 rounded-xl ${stat.bg} flex items-center justify-center mb-3`}>
+            <stat.icon size={20} className={`text-${stat.color}`} />
           </div>
-          <p className="font-mono font-bold text-xl text-white">{stat.value}</p>
-          <p className="font-body text-xs text-white/50 mt-1">{stat.label}</p>
+          <p className={`font-mono font-bold text-xl text-${stat.color}`}>{stat.value}</p>
+          <p className="font-body text-xs text-slate-500 mt-1">{stat.label}</p>
+          <p className="font-body text-xs text-slate-400 mt-0.5">{stat.change}</p>
         </motion.div>
       ))}
     </motion.div>

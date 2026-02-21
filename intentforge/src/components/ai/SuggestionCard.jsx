@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion';
 import { cardVariants } from '../../utils/animations';
 import { Sparkles, ChevronRight, TrendingDown } from 'lucide-react';
-import AnimatedButton from '../shared/AnimatedButton';
+
 
 export default function SuggestionCard({ suggestion, onAction }) {
   return (
@@ -9,7 +9,7 @@ export default function SuggestionCard({ suggestion, onAction }) {
       variants={cardVariants}
       whileHover={{ scale: 1.02 }}
       className="
-        backdrop-blur-md bg-gradient-glass border border-white/10
+        bg-white border border-violet-100
         rounded-2xl p-5 shadow-glass
       "
     >
@@ -19,12 +19,12 @@ export default function SuggestionCard({ suggestion, onAction }) {
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-start justify-between gap-2">
-            <h4 className="font-display font-semibold text-white text-sm">{suggestion.title}</h4>
+            <h4 className="font-display font-semibold text-violet-950 text-sm">{suggestion.title}</h4>
             <span className="text-xs font-mono text-trust-electric bg-trust-electric/10 px-2 py-0.5 rounded-full flex-shrink-0">
               {suggestion.confidence}% sure
             </span>
           </div>
-          <p className="font-body text-xs text-white/60 mt-1 leading-relaxed">{suggestion.description}</p>
+          <p className="font-body text-xs text-slate-500 mt-1 leading-relaxed">{suggestion.description}</p>
 
           <div className="flex items-center justify-between mt-3">
             <div className="flex items-center gap-1.5 text-success-emerald">

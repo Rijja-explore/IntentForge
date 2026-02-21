@@ -1,5 +1,5 @@
 import { motion } from 'framer-motion';
-import { containerVariants, cardVariants } from '../../utils/animations';
+import { containerVariants } from '../../utils/animations';
 import SuggestionCard from './SuggestionCard';
 import { AI_SUGGESTIONS } from '../../utils/constants';
 import { Brain, Sparkles } from 'lucide-react';
@@ -16,8 +16,8 @@ export default function InsightsPanel({ onApply }) {
           <Brain size={20} className="text-trust-electric" />
         </motion.div>
         <div>
-          <h3 className="font-display font-semibold text-white">AI Recommendations</h3>
-          <p className="font-body text-xs text-white/50">Based on your spending patterns</p>
+          <h3 className="font-display font-semibold text-violet-950">AI Recommendations</h3>
+          <p className="font-body text-xs text-slate-400">Based on your spending patterns</p>
         </div>
         <div className="ml-auto flex items-center gap-1.5 text-xs font-body text-money-gold">
           <Sparkles size={14} />

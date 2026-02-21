@@ -1,6 +1,6 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useCallback } from 'react';
-import { Mic, MicOff, Volume2 } from 'lucide-react';
+import { Mic, MicOff } from 'lucide-react';
 
 export default function VoiceInput({ onResult }) {
   const [listening, setListening] = useState(false);
@@ -91,14 +91,14 @@ export default function VoiceInput({ onResult }) {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -10 }}
-            className="px-4 py-2 rounded-xl bg-white/5 border border-white/10 text-sm font-body text-white/80 text-center max-w-xs"
+            className="px-4 py-2 rounded-xl bg-violet-50 border border-violet-100 text-sm font-body text-slate-500 text-center max-w-xs"
           >
             "{transcript}"
           </motion.div>
         )}
       </AnimatePresence>
 
-      <p className="text-xs font-body text-white/40 text-center">
+      <p className="text-xs font-body text-slate-400 text-center">
         {listening ? 'Listening... speak your command' : 'Say: "Lock 5000 rupees for groceries"'}
       </p>
     </div>

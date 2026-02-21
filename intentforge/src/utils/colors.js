@@ -20,16 +20,16 @@ export const STATUS_COLORS = {
 };
 
 export const CATEGORY_COLORS = {
-  food: '#06D6A0',
-  shopping: '#3E92CC',
-  transport: '#FFB81C',
-  gambling: '#D00000',
-  entertainment: '#FF6B35',
-  healthcare: '#9B59B6',
-  education: '#2ECC71',
-  utilities: '#F39C12',
-  travel: '#1ABC9C',
-  crypto: '#F7931A',
+  food: '#10B981',
+  shopping: '#A855F7',
+  transport: '#F59E0B',
+  gambling: '#EF4444',
+  entertainment: '#FF6B00',
+  healthcare: '#C084FC',
+  education: '#34D399',
+  utilities: '#FBBF24',
+  travel: '#2DD4BF',
+  crypto: '#FB923C',
 };
 
 export const RULE_COLORS = {

@@ -1,19 +1,17 @@
 import { motion } from 'framer-motion';
 import { transactionVariants } from '../../utils/animations';
 import StatusBadge from '../shared/StatusBadge';
-import { formatAmount, formatRelativeTime } from '../../utils/formatters';
 import { useState, useEffect } from 'react';
-import { CATEGORIES } from '../../utils/constants';
+import { formatAmount, formatRelativeTime } from '../../utils/formatters';
+import { CATEGORY_COLORS } from '../../utils/colors';
 
 export default function TransactionCard({ transaction }) {
   const [shouldShake, setShouldShake] = useState(false);
-  const category = CATEGORIES.find(c => c.id === transaction.category);
 
   useEffect(() => {
     if (transaction.status === 'blocked') {
       setShouldShake(true);
-      const timer = setTimeout(() => setShouldShake(false), 600);
-      return () => clearTimeout(timer);
+      setTimeout(() => setShouldShake(false), 500);
     }
   }, [transaction.status]);
 
@@ -23,37 +21,43 @@ export default function TransactionCard({ transaction }) {
       initial="initial"
       animate={shouldShake ? 'shake' : 'animate'}
       exit="exit"
-      whileHover={{ scale: 1.01 }}
       className={`
-        p-4 rounded-xl border backdrop-blur-md flex items-center gap-4
-        transition-colors duration-300
+        flex items-center gap-4 p-4 rounded-xl border transition-colors
         ${transaction.status === 'approved'
-          ? 'border-success-emerald/20 bg-success-emerald/5'
+          ? 'bg-success-emerald/5 border-success-emerald/20'
           : transaction.status === 'blocked'
-          ? 'border-danger-crimson/20 bg-danger-crimson/5'
-          : 'border-warning-amber/20 bg-warning-amber/5'
+          ? 'bg-danger-crimson/5 border-danger-crimson/20'
+          : 'bg-warning-amber/5 border-warning-amber/20'
         }
       `}
     >
-      {/* Category emoji */}
-      <div className="w-12 h-12 rounded-xl bg-white/5 flex items-center justify-center text-2xl flex-shrink-0">
-        {category?.icon || '💳'}
+      {/* Category icon */}
+      <div
+        className="w-10 h-10 rounded-xl flex items-center justify-center text-lg flex-shrink-0"
+        style={{ background: `${CATEGORY_COLORS[transaction.category]}15` }}
+      >
+        {transaction.avatar || '💳'}
       </div>
 
       {/* Details */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center justify-between gap-2">
-          <p className="font-body font-semibold text-white truncate">{transaction.merchant}</p>
-          <p className={`font-mono font-bold text-lg flex-shrink-0 ${
-            transaction.status === 'blocked' ? 'text-danger-crimson line-through' : 'text-white'
+          <p className="font-body font-semibold text-sm text-violet-950 truncate">{transaction.merchant}</p>
+          <p className={`font-mono font-bold text-sm flex-shrink-0 ${
+            transaction.status === 'blocked' ? 'line-through text-slate-400' : 'text-violet-950'
           }`}>
             {formatAmount(transaction.amount)}
           </p>
         </div>
-        <div className="flex items-center justify-between gap-2 mt-1">
-          <p className="text-xs text-white/50 font-body">{formatRelativeTime(transaction.timestamp)}</p>
+        <div className="flex items-center justify-between mt-1 gap-2">
+          <p className="font-body text-xs text-slate-400 capitalize">{transaction.category}</p>
           <StatusBadge status={transaction.status} />
         </div>
+        {transaction.timestamp && (
+          <p className="font-body text-xs text-slate-300 mt-0.5">
+            {formatRelativeTime(transaction.timestamp)}
+          </p>
+        )}
       </div>
     </motion.div>
   );

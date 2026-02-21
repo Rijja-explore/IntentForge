@@ -43,7 +43,7 @@ function ToggleSwitch({ value, onChange }) {
     <motion.button
       whileTap={{ scale: 0.85 }}
       onClick={() => onChange(!value)}
-      className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${value ? 'bg-trust-electric' : 'bg-white/10'}`}
+      className={`relative w-12 h-6 rounded-full transition-colors duration-300 ${value ? 'bg-trust-electric' : 'bg-violet-100'}`}
     >
       <motion.div
         animate={{ x: value ? 24 : 2 }}
@@ -76,8 +76,8 @@ export default function Settings() {
               P
             </div>
             <div>
-              <h3 className="font-display font-bold text-xl text-white">Prasad K.</h3>
-              <p className="font-body text-sm text-white/50">prasad@intentforge.in</p>
+              <h3 className="font-display font-bold text-xl text-violet-950">Prasad K.</h3>
+              <p className="font-body text-sm text-slate-400">prasad@intentforge.in</p>
               <div className="flex items-center gap-1.5 mt-1">
                 <div className="w-2 h-2 rounded-full bg-success-emerald" />
                 <span className="text-xs font-body text-success-emerald">Verified Account</span>
@@ -100,14 +100,14 @@ export default function Settings() {
                   <div className={`p-2 rounded-xl bg-${group.color}/10`}>
                     <group.icon size={18} className={`text-${group.color}`} />
                   </div>
-                  <h3 className="font-display font-semibold text-lg text-white">{group.title}</h3>
+                  <h3 className="font-display font-semibold text-lg text-violet-950">{group.title}</h3>
                 </div>
                 <div className="space-y-4">
                   {group.items.map((item) => (
                     <div key={item.label} className="flex items-center justify-between gap-4">
                       <div>
-                        <p className="font-body font-medium text-sm text-white">{item.label}</p>
-                        <p className="font-body text-xs text-white/40 mt-0.5">{item.description}</p>
+                        <p className="font-body font-medium text-sm text-violet-950">{item.label}</p>
+                        <p className="font-body text-xs text-slate-400 mt-0.5">{item.description}</p>
                       </div>
                       <ToggleSwitch value={settings[item.label]} onChange={() => toggle(item.label)} />
                     </div>
@@ -133,8 +133,8 @@ export default function Settings() {
 
         {/* App info */}
         <div className="text-center py-4">
-          <p className="font-mono text-xs text-white/20">IntentForge v1.0.0</p>
-          <p className="font-body text-xs text-white/20 mt-1">NXTGEN Hackathon 2025 • Programmable Digital Rupee</p>
+          <p className="font-mono text-xs text-slate-300">IntentForge v1.0.0</p>
+          <p className="font-body text-xs text-slate-300 mt-1">NXTGEN Hackathon 2025 • Programmable Digital Rupee</p>
         </div>
       </div>
     </div>

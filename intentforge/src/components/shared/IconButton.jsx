@@ -1,10 +1,10 @@
 import { motion } from 'framer-motion';
 
-export default function IconButton({ icon: Icon, onClick, variant = 'ghost', className = '', title = '', size = 20 }) {
+export default function IconButton({ icon: Icon, onClick, variant = 'default', label, size = 20 }) {
   const variants = {
-    ghost: 'text-white/70 hover:text-white bg-white/5 hover:bg-white/10',
-    primary: 'text-white bg-trust-electric/20 hover:bg-trust-electric/40',
-    danger: 'text-danger-crimson bg-danger-crimson/10 hover:bg-danger-crimson/20',
+    default: 'bg-violet-50 text-slate-500 hover:text-violet-950 border border-violet-100',
+    primary: 'bg-trust-electric text-white shadow-glow-blue',
+    ghost: 'text-slate-400 hover:text-trust-electric hover:bg-violet-50',
   };
 
   return (
@@ -12,13 +12,8 @@ export default function IconButton({ icon: Icon, onClick, variant = 'ghost', cla
       whileHover={{ scale: 1.1 }}
       whileTap={{ scale: 0.9 }}
       onClick={onClick}
-      title={title}
-      className={`
-        p-2 rounded-lg transition-colors duration-200
-        min-h-[44px] min-w-[44px] flex items-center justify-center
-        ${variants[variant]}
-        ${className}
-      `}
+      className={`p-2.5 rounded-xl min-h-[44px] min-w-[44px] flex items-center justify-center transition-colors ${variants[variant]}`}
+      aria-label={label}
     >
       <Icon size={size} />
     </motion.button>

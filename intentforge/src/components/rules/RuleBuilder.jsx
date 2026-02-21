@@ -5,7 +5,7 @@ import CategoryPicker from './CategoryPicker';
 import AmountInput from './AmountInput';
 import DeployButton from './DeployButton';
 import GlassCard from '../shared/GlassCard';
-import { Settings2, ChevronRight } from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 
 export default function RuleBuilder({ onRuleCreated }) {
   const [step, setStep] = useState(1); // 1: template, 2: customize, 3: review
@@ -48,15 +48,15 @@ export default function RuleBuilder({ onRuleCreated }) {
         {[1, 2, 3].map((s) => (
           <div key={s} className="flex items-center gap-2">
             <motion.div
-              animate={step >= s ? { backgroundColor: '#3E92CC' } : { backgroundColor: 'rgba(255,255,255,0.1)' }}
+              animate={step >= s ? { backgroundColor: '#7C3AED' } : { backgroundColor: 'rgba(124,58,237,0.1)' }}
               className="w-8 h-8 rounded-full flex items-center justify-center text-sm font-mono font-bold text-white"
             >
               {s}
             </motion.div>
-            {s < 3 && <ChevronRight size={16} className="text-white/30" />}
+            {s < 3 && <ChevronRight size={16} className="text-slate-300" />}
           </div>
         ))}
-        <span className="ml-2 text-sm font-body text-white/50">
+        <span className="ml-2 text-sm font-body text-slate-400">
           {step === 1 ? 'Choose Template' : step === 2 ? 'Customize Rule' : 'Review & Deploy'}
         </span>
       </div>
@@ -76,9 +76,9 @@ export default function RuleBuilder({ onRuleCreated }) {
                 <input
                   value={ruleName}
                   onChange={(e) => setRuleName(e.target.value)}
-                  className="bg-transparent font-display font-bold text-xl text-white outline-none border-b border-white/20 focus:border-trust-electric pb-1 w-full"
+                  className="bg-transparent font-display font-bold text-xl text-violet-950 outline-none border-b border-violet-100 focus:border-trust-electric pb-1 w-full"
                 />
-                <p className="font-body text-sm text-white/50 mt-1">{selectedTemplate.description}</p>
+                <p className="font-body text-sm text-slate-400 mt-1">{selectedTemplate.description}</p>
               </div>
             </div>
 

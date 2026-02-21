@@ -36,7 +36,7 @@ export default function RuleBuilderPage() {
         {/* Header actions */}
         <div className="flex items-center justify-between">
           <div>
-            <p className="font-body text-sm text-white/60">
+            <p className="font-body text-sm text-slate-500">
               {rules.filter(r => r.active !== false).length} active rules protecting your wallet
             </p>
           </div>
@@ -59,7 +59,7 @@ export default function RuleBuilderPage() {
             <GlassCard hover={false} glow glowColor="blue">
               <div className="flex items-center gap-3 mb-5">
                 <Settings2 size={22} className="text-trust-electric" />
-                <h3 className="font-display font-bold text-xl text-white">Create New Rule</h3>
+                <h3 className="font-display font-bold text-xl text-violet-950">Create New Rule</h3>
               </div>
               <RuleBuilder onRuleCreated={handleRuleCreated} />
             </GlassCard>
@@ -68,7 +68,7 @@ export default function RuleBuilderPage() {
 
         {/* Active Rules */}
         <div>
-          <h3 className="font-display font-semibold text-lg text-white mb-4">Your Rules</h3>
+          <h3 className="font-display font-semibold text-lg text-violet-950 mb-4">Your Rules</h3>
           <motion.div
             variants={containerVariants}
             initial="hidden"
@@ -90,8 +90,8 @@ export default function RuleBuilderPage() {
               animate={{ opacity: 1 }}
               className="text-center py-16"
             >
-              <p className="font-display text-white/40 text-lg">No rules yet</p>
-              <p className="font-body text-white/30 text-sm mt-2">Create your first rule to protect your wallet</p>
+              <p className="font-display text-slate-400 text-lg">No rules yet</p>
+              <p className="font-body text-slate-400 text-sm mt-2">Create your first rule to protect your wallet</p>
             </motion.div>
           )}
         </div>

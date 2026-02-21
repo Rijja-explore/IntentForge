@@ -2,7 +2,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { modalVariants } from '../../utils/animations';
 import { useState, useRef, useEffect } from 'react';
 import { X, Send, Sparkles } from 'lucide-react';
-import VoiceInput from './VoiceInput';
+
 
 const AI_RESPONSES = [
   "I can help you create a rule to limit that! Based on your spending patterns, I recommend capping ₹2,000 per day for this category.",
@@ -44,7 +44,7 @@ export default function ChatPanel({ isOpen, onClose }) {
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             onClick={onClose}
-            className="fixed inset-0 bg-black/40 backdrop-blur-sm z-40"
+            className="fixed inset-0 bg-violet-950/20 backdrop-blur-sm z-40"
           />
           <motion.div
             variants={modalVariants}
@@ -53,7 +53,7 @@ export default function ChatPanel({ isOpen, onClose }) {
             exit="exit"
             className="fixed bottom-24 right-4 md:right-6 z-50 w-[calc(100vw-2rem)] max-w-sm"
           >
-            <div className="bg-neutral-charcoal border border-white/20 rounded-3xl overflow-hidden shadow-2xl">
+            <div className="bg-white border border-violet-100 rounded-3xl overflow-hidden shadow-2xl">
               {/* Header */}
               <div className="flex items-center justify-between px-5 py-4 border-b border-white/10 bg-gradient-primary">
                 <div className="flex items-center gap-3">
@@ -93,7 +93,7 @@ export default function ChatPanel({ isOpen, onClose }) {
                       max-w-[85%] px-4 py-3 rounded-2xl text-sm font-body leading-relaxed
                       ${msg.role === 'user'
                         ? 'bg-trust-electric text-white rounded-br-sm'
-                        : 'bg-white/5 border border-white/10 text-white/90 rounded-bl-sm'
+                        : 'bg-violet-50 border border-violet-100 text-violet-950 rounded-bl-sm'
                       }
                     `}>
                       {msg.text}
@@ -106,7 +106,7 @@ export default function ChatPanel({ isOpen, onClose }) {
                     animate={{ opacity: 1 }}
                     className="flex justify-start"
                   >
-                    <div className="bg-white/5 border border-white/10 px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1">
+                    <div className="bg-violet-50 border border-violet-100 px-4 py-3 rounded-2xl rounded-bl-sm flex gap-1">
                       {[0, 1, 2].map(i => (
                         <motion.div
                           key={i}
@@ -123,13 +123,13 @@ export default function ChatPanel({ isOpen, onClose }) {
 
               {/* Voice + Input */}
               <div className="px-4 pb-4">
-                <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-white/5 border border-white/10">
+                <div className="flex items-center gap-2 px-3 py-2 rounded-xl bg-violet-50 border border-violet-100">
                   <input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => e.key === 'Enter' && sendMessage(input)}
                     placeholder="Ask me anything..."
-                    className="flex-1 bg-transparent text-sm font-body text-white placeholder-white/30 outline-none"
+                    className="flex-1 bg-transparent text-sm font-body text-violet-950 placeholder-slate-400 outline-none"
                   />
                   <motion.button
                     whileHover={{ scale: 1.1 }}

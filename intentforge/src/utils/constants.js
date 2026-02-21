@@ -84,12 +84,12 @@ export const DEMO_TRANSACTIONS = [
 ];
 
 export const SPENDING_DATA = [
-  { name: 'Food', value: 8500, color: '#06D6A0' },
-  { name: 'Shopping', value: 12000, color: '#3E92CC' },
-  { name: 'Transport', value: 3200, color: '#FFB81C' },
-  { name: 'Entertainment', value: 2800, color: '#FF6B35' },
-  { name: 'Healthcare', value: 1500, color: '#9B59B6' },
-  { name: 'Others', value: 2000, color: '#718096' },
+  { name: 'Food', value: 8500, color: '#10B981' },
+  { name: 'Shopping', value: 12000, color: '#A855F7' },
+  { name: 'Transport', value: 3200, color: '#F59E0B' },
+  { name: 'Entertainment', value: 2800, color: '#FF6B00' },
+  { name: 'Healthcare', value: 1500, color: '#C084FC' },
+  { name: 'Others', value: 2000, color: '#6B7280' },
 ];
 
 export const AI_SUGGESTIONS = [

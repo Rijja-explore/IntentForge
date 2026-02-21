@@ -11,11 +11,11 @@ export default function Header({ title = 'Dashboard' }) {
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.3 }}
       className="sticky top-0 z-30 flex items-center justify-between px-6 py-4
-        bg-neutral-charcoal/80 backdrop-blur-xl border-b border-white/10"
+        bg-white/95 backdrop-blur-xl border-b border-violet-100"
     >
       <div>
-        <h2 className="font-display font-bold text-2xl text-white">{title}</h2>
-        <p className="text-xs text-white/50 font-body mt-0.5">NXTGEN Hackathon 2025</p>
+        <h2 className="font-display font-bold text-2xl text-violet-950">{title}</h2>
+        <p className="text-xs text-slate-400 font-body mt-0.5">NXTGEN Hackathon 2025</p>
       </div>
 
       <div className="flex items-center gap-3">
@@ -23,7 +23,7 @@ export default function Header({ title = 'Dashboard' }) {
         <motion.div
           whileFocus={{ scale: 1.02 }}
           className="hidden md:flex items-center gap-2 px-4 py-2 rounded-xl
-            bg-white/5 border border-white/10 text-white/60"
+            bg-violet-50 border border-violet-100 text-slate-400"
         >
           <Search size={16} />
           <span className="text-sm font-body">Search...</span>
@@ -43,7 +43,7 @@ export default function Header({ title = 'Dashboard' }) {
         <motion.button
           whileHover={{ scale: 1.1 }}
           whileTap={{ scale: 0.9 }}
-          className="relative p-2 rounded-xl bg-white/5 border border-white/10 text-white/70 hover:text-white min-h-[44px] min-w-[44px] flex items-center justify-center"
+          className="relative p-2 rounded-xl bg-violet-50 border border-violet-100 text-slate-500 hover:text-violet-950 min-h-[44px] min-w-[44px] flex items-center justify-center"
           aria-label="Notifications"
         >
           <Bell size={20} />

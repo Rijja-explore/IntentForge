@@ -13,7 +13,7 @@ const navItems = [
 export default function MobileNav() {
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50
-      bg-neutral-charcoal/90 backdrop-blur-xl border-t border-white/10
+      bg-white/95 backdrop-blur-xl border-t border-violet-100
       flex items-center justify-around px-2 py-2"
     >
       {navItems.map((item) => (
@@ -24,7 +24,7 @@ export default function MobileNav() {
           className={({ isActive }) => `
             flex flex-col items-center gap-1 px-3 py-2 rounded-xl
             transition-all duration-200 min-w-[56px]
-            ${isActive ? 'text-trust-electric' : 'text-white/50'}
+            ${isActive ? 'text-trust-electric' : 'text-slate-400'}
           `}
         >
           {({ isActive }) => (
@@ -33,7 +33,7 @@ export default function MobileNav() {
                 {isActive ? (
                   <motion.div
                     layoutId="mobileActive"
-                    className="p-1.5 rounded-lg bg-trust-electric/20"
+                    className="p-1.5 rounded-lg bg-violet-50"
                   >
                     <item.icon size={20} />
                   </motion.div>

@@ -14,9 +14,9 @@ export default function CopilotOrb() {
         animate={{
           y: [0, -10, 0],
           boxShadow: [
-            '0 0 20px rgba(62, 146, 204, 0.4)',
-            '0 0 40px rgba(62, 146, 204, 0.7)',
-            '0 0 20px rgba(62, 146, 204, 0.4)',
+            '0 0 20px rgba(124, 58, 237, 0.4)',
+            '0 0 40px rgba(124, 58, 237, 0.7)',
+            '0 0 20px rgba(124, 58, 237, 0.4)',
           ],
         }}
         transition={{
@@ -41,7 +41,7 @@ export default function CopilotOrb() {
         </motion.div>
         {!isOpen && (
           <motion.div
-            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-success-emerald border-2 border-neutral-charcoal"
+            className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-success-emerald border-2 border-violet-50"
             animate={{ scale: [1, 1.2, 1] }}
             transition={{ duration: 2, repeat: Infinity }}
           />

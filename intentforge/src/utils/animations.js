@@ -97,9 +97,9 @@ export const orbVariants = {
 export const glowVariants = {
   pulse: {
     boxShadow: [
-      '0 0 10px rgba(62, 146, 204, 0.3)',
-      '0 0 20px rgba(62, 146, 204, 0.6)',
-      '0 0 10px rgba(62, 146, 204, 0.3)',
+      '0 0 10px rgba(168, 85, 247, 0.3)',
+      '0 0 20px rgba(168, 85, 247, 0.6)',
+      '0 0 10px rgba(168, 85, 247, 0.3)',
     ],
     transition: {
       duration: 2,

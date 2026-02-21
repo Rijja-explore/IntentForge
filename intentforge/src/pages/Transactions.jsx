@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { motion } from 'framer-motion';
 import Header from '../components/layout/Header';
 import GlassCard from '../components/shared/GlassCard';
 import TransactionCard from '../components/transactions/TransactionCard';
@@ -40,12 +39,12 @@ export default function Transactions() {
               <XAxis dataKey="day" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} axisLine={false} tickLine={false} />
               <YAxis tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} />
               <Tooltip
-                contentStyle={{ background: '#0F172A', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '12px' }}
-                labelStyle={{ color: 'white' }}
+                contentStyle={{ background: '#FFFFFF', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '12px' }}
+                labelStyle={{ color: '#1E0A3C' }}
                 formatter={(v) => `₹${v.toLocaleString('en-IN')}`}
               />
-              <Bar dataKey="approved" fill="#06D6A0" radius={[4, 4, 0, 0]} />
-              <Bar dataKey="blocked" fill="#D00000" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="approved" fill="#10B981" radius={[4, 4, 0, 0]} />
+              <Bar dataKey="blocked" fill="#EF4444" radius={[4, 4, 0, 0]} />
             </BarChart>
           </ResponsiveContainer>
           <div className="flex gap-4 mt-2">

@@ -1,104 +1,105 @@
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { cardVariants } from '../../utils/animations';
-import { Toggle } from 'lucide-react';
 import { useState } from 'react';
-import AnimatedButton from '../shared/AnimatedButton';
-import { Trash2, Edit2, Power } from 'lucide-react';
+import { Trash2, ChevronDown } from 'lucide-react';
+import { RULE_COLORS } from '../../utils/colors';
 
-export default function RuleCard({ rule, onDelete, onEdit }) {
+export default function RuleCard({ rule, onDelete, onToggle }) {
+  const [expanded, setExpanded] = useState(false);
   const [active, setActive] = useState(rule.active !== false);
+  const colors = RULE_COLORS[rule.color] || RULE_COLORS.blue;
 
-  const colorMap = {
-    blue: 'border-trust-electric/30 bg-trust-electric/5',
-    red: 'border-danger-crimson/30 bg-danger-crimson/5',
-    green: 'border-success-emerald/30 bg-success-emerald/5',
-    gold: 'border-money-gold/30 bg-money-gold/5',
-    orange: 'border-money-orange/30 bg-money-orange/5',
-    purple: 'border-purple-500/30 bg-purple-500/5',
+  const handleToggle = () => {
+    setActive(p => !p);
+    onToggle && onToggle(rule.id, !active);
   };
-
-  const textMap = {
-    blue: 'text-trust-electric',
-    red: 'text-danger-crimson',
-    green: 'text-success-emerald',
-    gold: 'text-money-gold',
-    orange: 'text-money-orange',
-    purple: 'text-purple-400',
-  };
-
-  const color = rule.color || 'blue';
 
   return (
     <motion.div
       variants={cardVariants}
-      whileHover={{ scale: 1.02, boxShadow: '0 20px 40px rgba(0,0,0,0.3)' }}
-      className={`
-        backdrop-blur-md border rounded-2xl p-5 shadow-glass
-        ${active ? colorMap[color] : 'border-white/5 bg-white/2 opacity-60'}
-        transition-all duration-300
-      `}
+      whileHover={{ boxShadow: '0 8px 32px rgba(124, 58, 237, 0.12)' }}
+      className={`bg-white border rounded-2xl overflow-hidden shadow-glass transition-all ${
+        active ? `${colors.border}` : 'border-violet-100 opacity-70'
+      }`}
     >
-      <div className="flex items-start justify-between gap-3">
-        <div className="flex items-center gap-3 flex-1 min-w-0">
-          <div className={`text-3xl ${active ? '' : 'grayscale opacity-50'}`}>{rule.icon}</div>
-          <div className="min-w-0">
-            <h3 className={`font-display font-semibold text-base ${active ? 'text-white' : 'text-white/40'}`}>
-              {rule.title}
-            </h3>
-            <p className="font-body text-xs text-white/50 mt-0.5 truncate">{rule.description}</p>
+      {/* Color accent top bar */}
+      <div className={`h-1 w-full ${active ? `bg-gradient-primary` : 'bg-violet-100'}`} />
+
+      <div className="p-5">
+        <div className="flex items-start justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">{rule.icon}</span>
+            <div>
+              <h4 className="font-display font-semibold text-sm text-violet-950">{rule.title}</h4>
+              <p className="font-body text-xs text-slate-400 mt-0.5">{rule.description}</p>
+            </div>
+          </div>
+
+          {/* Toggle switch */}
+          <motion.button
+            whileTap={{ scale: 0.9 }}
+            onClick={handleToggle}
+            className={`relative flex-shrink-0 w-11 h-6 rounded-full transition-colors duration-300 ${
+              active ? 'bg-trust-electric' : 'bg-violet-100'
+            }`}
+            aria-label={active ? 'Disable rule' : 'Enable rule'}
+          >
+            <motion.div
+              animate={{ x: active ? 22 : 2 }}
+              transition={{ type: 'spring', stiffness: 500, damping: 30 }}
+              className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-sm"
+            />
+          </motion.button>
+        </div>
+
+        {/* Footer */}
+        <div className="flex items-center justify-between mt-4 pt-3 border-t border-violet-50">
+          <div className={`text-xs font-body font-medium px-2.5 py-1 rounded-full ${colors.bg} ${colors.text}`}>
+            {rule.rule?.type?.replace(/_/g, ' ') || 'Custom Rule'}
+          </div>
+          <div className="flex items-center gap-1">
+            <motion.button
+              whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+              onClick={() => setExpanded(p => !p)}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-trust-electric hover:bg-violet-50"
+              aria-label="Expand rule"
+            >
+              <motion.div animate={{ rotate: expanded ? 180 : 0 }}>
+                <ChevronDown size={16} />
+              </motion.div>
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }}
+              onClick={() => onDelete && onDelete(rule.id)}
+              className="p-1.5 rounded-lg text-slate-400 hover:text-danger-crimson hover:bg-danger-crimson/10"
+              aria-label="Delete rule"
+            >
+              <Trash2 size={16} />
+            </motion.button>
           </div>
         </div>
 
-        {/* Toggle */}
-        <motion.button
-          whileTap={{ scale: 0.85 }}
-          onClick={() => setActive(p => !p)}
-          className={`
-            relative w-12 h-6 rounded-full transition-colors duration-300 flex-shrink-0
-            ${active ? 'bg-trust-electric' : 'bg-white/10'}
-          `}
-          aria-label={active ? 'Deactivate rule' : 'Activate rule'}
-        >
-          <motion.div
-            animate={{ x: active ? 24 : 2 }}
-            transition={{ type: 'spring', stiffness: 500, damping: 30 }}
-            className="absolute top-1 w-4 h-4 bg-white rounded-full shadow-md"
-          />
-        </motion.button>
+        {/* Expanded details */}
+        <AnimatePresence>
+          {expanded && (
+            <motion.div
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              className="overflow-hidden"
+            >
+              <div className="mt-3 pt-3 border-t border-violet-50">
+                <p className="font-body text-xs text-slate-400">
+                  Condition: <span className="font-mono text-trust-electric">{rule.rule?.condition}</span>
+                </p>
+                <p className="font-body text-xs text-slate-400 mt-1">
+                  Value: <span className="font-mono text-trust-electric">{String(rule.rule?.value)}</span>
+                </p>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
-
-      {active && (
-        <motion.div
-          initial={{ opacity: 0, height: 0 }}
-          animate={{ opacity: 1, height: 'auto' }}
-          exit={{ opacity: 0, height: 0 }}
-          className="mt-4 pt-4 border-t border-white/10 flex items-center justify-between"
-        >
-          <div className={`text-xs font-mono px-2 py-1 rounded-lg ${colorMap[color]} ${textMap[color]} border border-current/20`}>
-            {rule.rule?.type?.replace('_', ' ').toUpperCase() || 'CUSTOM RULE'}
-          </div>
-          <div className="flex gap-2">
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => onEdit && onEdit(rule)}
-              className="p-1.5 rounded-lg text-white/50 hover:text-trust-electric hover:bg-trust-electric/10 transition-colors"
-              aria-label="Edit rule"
-            >
-              <Edit2 size={14} />
-            </motion.button>
-            <motion.button
-              whileHover={{ scale: 1.1 }}
-              whileTap={{ scale: 0.9 }}
-              onClick={() => onDelete && onDelete(rule.id)}
-              className="p-1.5 rounded-lg text-white/50 hover:text-danger-crimson hover:bg-danger-crimson/10 transition-colors"
-              aria-label="Delete rule"
-            >
-              <Trash2 size={14} />
-            </motion.button>
-          </div>
-        </motion.div>
-      )}
     </motion.div>
   );
 }

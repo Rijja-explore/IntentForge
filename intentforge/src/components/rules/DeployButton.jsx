@@ -1,12 +1,11 @@
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState } from 'react';
-import { Rocket, CheckCircle, Loader2 } from 'lucide-react';
+import { Rocket, Loader2, CheckCircle2 } from 'lucide-react';
 
-export default function DeployButton({ onDeploy, disabled = false }) {
+export default function DeployButton({ onDeploy }) {
   const [state, setState] = useState('idle'); // idle | deploying | success
 
   const handleDeploy = async () => {
-    if (disabled || state !== 'idle') return;
     setState('deploying');
     await new Promise(r => setTimeout(r, 2000));
     setState('success');
@@ -16,44 +15,36 @@ export default function DeployButton({ onDeploy, disabled = false }) {
 
   return (
     <motion.button
-      whileHover={state === 'idle' && !disabled ? { scale: 1.05 } : {}}
-      whileTap={state === 'idle' && !disabled ? { scale: 0.95 } : {}}
-      onClick={handleDeploy}
-      disabled={disabled || state !== 'idle'}
+      whileHover={{ scale: state === 'idle' ? 1.04 : 1 }}
+      whileTap={{ scale: state === 'idle' ? 0.96 : 1 }}
+      onClick={state === 'idle' ? handleDeploy : undefined}
+      disabled={state !== 'idle'}
       className={`
-        w-full py-4 rounded-xl font-display font-bold text-lg
+        w-full py-4 rounded-xl font-display font-bold text-base
         flex items-center justify-center gap-3
-        transition-all duration-500
-        disabled:opacity-50 disabled:cursor-not-allowed
-        ${state === 'success'
-          ? 'bg-success-emerald/20 border border-success-emerald text-success-emerald shadow-glow-green'
-          : 'bg-gradient-primary text-white shadow-glow-blue'
-        }
+        transition-all duration-300
+        ${state === 'idle' ? 'bg-gradient-primary text-white shadow-glow-blue cursor-pointer' : ''}
+        ${state === 'deploying' ? 'bg-violet-100 text-trust-electric cursor-wait' : ''}
+        ${state === 'success' ? 'bg-success-emerald/10 text-success-emerald border border-success-emerald/30 cursor-default' : ''}
       `}
     >
       <AnimatePresence mode="wait">
         {state === 'idle' && (
-          <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-3">
-            <Rocket size={22} />
+          <motion.div key="idle" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+            <Rocket size={20} />
             <span>Deploy to Blockchain</span>
           </motion.div>
         )}
         {state === 'deploying' && (
-          <motion.div key="deploying" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-3">
-            <Loader2 size={22} className="animate-spin" />
-            <span>Deploying Smart Contract...</span>
+          <motion.div key="deploying" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+            <Loader2 size={20} className="animate-spin" />
+            <span>Deploying smart contract...</span>
           </motion.div>
         )}
         {state === 'success' && (
-          <motion.div
-            key="success"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0 }}
-            className="flex items-center gap-3"
-          >
-            <CheckCircle size={22} />
-            <span>Rule Deployed Successfully!</span>
+          <motion.div key="success" initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-2">
+            <CheckCircle2 size={20} />
+            <span>Deployed Successfully!</span>
           </motion.div>
         )}
       </AnimatePresence>

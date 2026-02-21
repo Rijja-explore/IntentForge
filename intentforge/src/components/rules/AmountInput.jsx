@@ -7,12 +7,15 @@ export default function AmountInput({ label = 'Amount Limit', value, onChange, p
 
   return (
     <div>
-      <label className="block font-body text-sm font-medium text-white/70 mb-2">{label}</label>
+      <label className="block font-body text-sm font-medium text-slate-500 mb-2">{label}</label>
       <motion.div
-        animate={focused ? { boxShadow: '0 0 0 2px #3E92CC' } : { boxShadow: '0 0 0 1px rgba(255,255,255,0.1)' }}
-        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-white/5 border border-white/10"
+        animate={focused
+          ? { boxShadow: '0 0 0 2px #7C3AED', borderColor: '#7C3AED' }
+          : { boxShadow: '0 0 0 1px rgba(124,58,237,0.1)', borderColor: 'rgba(124,58,237,0.1)' }
+        }
+        className="flex items-center gap-3 px-4 py-3 rounded-xl bg-violet-50 border border-violet-100"
       >
-        <IndianRupee size={18} className={focused ? 'text-trust-electric' : 'text-white/40'} />
+        <IndianRupee size={18} className={focused ? 'text-trust-electric' : 'text-slate-400'} />
         <input
           type="number"
           value={value}
@@ -20,7 +23,7 @@ export default function AmountInput({ label = 'Amount Limit', value, onChange, p
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           placeholder={placeholder}
-          className="flex-1 bg-transparent font-mono text-white text-lg outline-none placeholder-white/20"
+          className="flex-1 bg-transparent font-mono text-violet-950 text-lg outline-none placeholder-slate-300"
         />
       </motion.div>
     </div>

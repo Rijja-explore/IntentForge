@@ -13,11 +13,11 @@ export default function AnimatedButton({
 }) {
   const variants = {
     primary: 'bg-gradient-primary text-white shadow-glow-blue',
-    money: 'bg-gradient-money text-neutral-charcoal shadow-glow-gold font-bold',
-    outline: 'border-2 border-trust-electric text-trust-electric bg-transparent',
-    ghost: 'text-trust-electric bg-trust-electric/10 hover:bg-trust-electric/20',
-    danger: 'bg-danger-crimson/20 text-danger-crimson border border-danger-crimson/50',
-    success: 'bg-success-emerald/20 text-success-emerald border border-success-emerald/50',
+    money: 'bg-gradient-money text-white shadow-glow-gold font-bold',
+    outline: 'border-2 border-trust-electric text-trust-electric bg-white hover:bg-violet-50',
+    ghost: 'text-trust-electric bg-violet-50 hover:bg-violet-100',
+    danger: 'bg-danger-crimson/10 text-danger-crimson border border-danger-crimson/30',
+    success: 'bg-success-emerald/10 text-success-emerald border border-success-emerald/30',
   };
 
   return (

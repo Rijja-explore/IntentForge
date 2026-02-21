@@ -4,16 +4,19 @@ module.exports = {
   theme: {
     extend: {
       colors: {
-        'trust-deep': '#0A2463',
-        'trust-electric': '#3E92CC',
-        'money-gold': '#FFB81C',
-        'money-orange': '#FF6B35',
-        'danger-crimson': '#D00000',
-        'success-emerald': '#06D6A0',
-        'warning-amber': '#FFA500',
-        'neutral-slate': '#1E293B',
-        'neutral-charcoal': '#0F172A',
-        'glass-white': 'rgba(255, 255, 255, 0.05)',
+        // Brand: deep violet + sunrise orange
+        'trust-deep': '#3B0764',
+        'trust-electric': '#7C3AED',
+        'money-gold': '#F97316',
+        'money-orange': '#EA580C',
+        // Status
+        'danger-crimson': '#DC2626',
+        'success-emerald': '#059669',
+        'warning-amber': '#D97706',
+        // Surface: light theme
+        'neutral-slate': '#F5F0FF',   // light violet surface
+        'neutral-charcoal': '#FAFAFE', // page background
+        'glass-white': 'rgba(255,255,255,0.9)',
       },
       fontFamily: {
         display: ['Space Grotesk', 'sans-serif'],
@@ -21,18 +24,19 @@ module.exports = {
         mono: ['JetBrains Mono', 'monospace'],
       },
       backgroundImage: {
-        'gradient-primary': 'linear-gradient(135deg, #0A2463 0%, #3E92CC 100%)',
-        'gradient-money': 'linear-gradient(135deg, #FFB81C 0%, #FF6B35 100%)',
-        'gradient-glass': 'linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0.05) 100%)',
-        'gradient-mesh': 'radial-gradient(circle at 20% 50%, rgba(62,146,204,0.2) 0%, transparent 50%), radial-gradient(circle at 80% 80%, rgba(255,184,28,0.2) 0%, transparent 50%)',
+        // Firefox-logo sunrise: deep violet → violet → magenta → orange
+        'gradient-primary': 'linear-gradient(135deg, #3B0764 0%, #7C3AED 40%, #C026D3 70%, #F97316 100%)',
+        'gradient-money': 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
+        'gradient-glass': 'linear-gradient(135deg, rgba(255,255,255,0.95) 0%, rgba(245,240,255,0.9) 100%)',
+        'gradient-mesh': 'radial-gradient(circle at 15% 40%, rgba(124,58,237,0.07) 0%, transparent 50%), radial-gradient(circle at 85% 70%, rgba(249,115,22,0.07) 0%, transparent 50%)',
       },
       boxShadow: {
-        'glass': '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-        'glow-blue': '0 0 20px rgba(62, 146, 204, 0.5)',
-        'glow-gold': '0 0 20px rgba(255, 184, 28, 0.5)',
-        'glow-red': '0 0 20px rgba(208, 0, 0, 0.5)',
-        'glow-green': '0 0 20px rgba(6, 214, 160, 0.5)',
-        'card-hover': '0 20px 40px rgba(0, 0, 0, 0.3)',
+        'glass': '0 1px 3px rgba(0,0,0,0.05), 0 4px 16px rgba(124,58,237,0.08), 0 0 0 1px rgba(124,58,237,0.06)',
+        'glow-blue': '0 0 24px rgba(124, 58, 237, 0.25)',
+        'glow-gold': '0 0 24px rgba(249, 115, 22, 0.25)',
+        'glow-red': '0 0 24px rgba(220, 38, 38, 0.2)',
+        'glow-green': '0 0 24px rgba(5, 150, 105, 0.2)',
+        'card-hover': '0 8px 32px rgba(124, 58, 237, 0.12), 0 2px 8px rgba(0,0,0,0.06)',
       },
       animation: {
         'float': 'float 3s ease-in-out infinite',

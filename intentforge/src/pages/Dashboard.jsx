@@ -40,7 +40,7 @@ export default function Dashboard() {
           {/* Trust Score */}
           <motion.div variants={cardVariants}>
             <GlassCard className="flex flex-col items-center" glow glowColor="green">
-              <h3 className="font-display font-semibold text-lg text-white mb-4 self-start">Trust Score</h3>
+              <h3 className="font-display font-semibold text-lg text-violet-950 mb-4 self-start">Trust Score</h3>
               <TrustScoreGauge score={87} previousScore={82} />
             </GlassCard>
           </motion.div>
@@ -48,7 +48,7 @@ export default function Dashboard() {
           {/* Spending Chart */}
           <motion.div variants={cardVariants} className="lg:col-span-2">
             <GlassCard>
-              <h3 className="font-display font-semibold text-lg text-white mb-4">Spending Breakdown</h3>
+              <h3 className="font-display font-semibold text-lg text-violet-950 mb-4">Spending Breakdown</h3>
               <SpendingChart />
             </GlassCard>
           </motion.div>

@@ -2,36 +2,32 @@ import { motion } from 'framer-motion';
 import { useState } from 'react';
 
 const filters = [
-  { id: 'all', label: 'All' },
-  { id: 'approved', label: 'Approved' },
-  { id: 'blocked', label: 'Blocked' },
-  { id: 'pending', label: 'Pending' },
+  { value: 'all', label: 'All' },
+  { value: 'approved', label: 'Approved' },
+  { value: 'blocked', label: 'Blocked' },
+  { value: 'pending', label: 'Pending' },
 ];
 
 export default function FilterBar({ onFilter }) {
   const [active, setActive] = useState('all');
 
-  const handleFilter = (id) => {
-    setActive(id);
-    onFilter && onFilter(id);
+  const handleFilter = (value) => {
+    setActive(value);
+    onFilter && onFilter(value);
   };
 
   return (
     <div className="flex gap-2 flex-wrap">
       {filters.map((f) => (
         <motion.button
-          key={f.id}
-          whileHover={{ scale: 1.05 }}
+          key={f.value}
           whileTap={{ scale: 0.95 }}
-          onClick={() => handleFilter(f.id)}
-          className={`
-            px-4 py-2 rounded-full text-sm font-body font-medium
-            transition-all duration-200 border
-            ${active === f.id
-              ? 'bg-trust-electric text-white border-trust-electric shadow-glow-blue'
-              : 'bg-white/5 text-white/60 border-white/10 hover:border-white/20'
-            }
-          `}
+          onClick={() => handleFilter(f.value)}
+          className={`px-4 py-2 rounded-full text-sm font-body font-medium transition-colors ${
+            active === f.value
+              ? 'bg-trust-electric text-white shadow-glow-blue'
+              : 'bg-violet-50 text-slate-500 border border-violet-100 hover:border-trust-electric hover:text-trust-electric'
+          }`}
         >
           {f.label}
         </motion.button>
