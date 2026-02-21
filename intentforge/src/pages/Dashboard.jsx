@@ -8,29 +8,52 @@ import SpendingChart from '../components/wallet/SpendingChart';
 import LiveFeed from '../components/transactions/LiveFeed';
 import InsightsPanel from '../components/ai/InsightsPanel';
 import GlassCard from '../components/shared/GlassCard';
-import { containerVariants, cardVariants } from '../utils/animations';
+import { containerVariants, cardVariants, heroEntrance } from '../utils/animations';
+import { Sparkles, Zap, TrendingUp } from 'lucide-react';
+
+function SectionHeader({ icon: Icon, title, subtitle, color = '#7C3AED' }) {
+  return (
+    <div className="flex items-center gap-3 mb-5">
+      <div
+        className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0"
+        style={{ background: `${color}15`, border: `1px solid ${color}30` }}
+      >
+        <Icon size={16} style={{ color }} />
+      </div>
+      <div>
+        <h3 className="font-display font-bold text-base text-violet-950">{title}</h3>
+        {subtitle && <p className="text-xs font-body text-slate-400 mt-0.5">{subtitle}</p>}
+      </div>
+    </div>
+  );
+}
 
 export default function Dashboard() {
   const [balance] = useState(50000);
 
   return (
-    <div>
+    <div className="relative min-h-screen">
+      {/* Aurora background */}
+      <div className="aurora-bg" />
+
       <Header title="Dashboard" />
-      <div className="p-4 md:p-6 space-y-6 pb-24 md:pb-6">
+      <div className="relative z-10 p-4 md:p-6 space-y-6 pb-24 md:pb-6">
 
         {/* Balance Hero */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.4 }}
-        >
+        <motion.div {...heroEntrance}>
           <BalanceHero balance={balance} change={12.5} locked={10000} />
         </motion.div>
 
         {/* Quick Stats */}
-        <QuickStats />
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.15, type: 'spring', stiffness: 120, damping: 20 }}
+        >
+          <QuickStats />
+        </motion.div>
 
-        {/* Main grid */}
+        {/* Main grid: Trust + Spending */}
         <motion.div
           variants={containerVariants}
           initial="hidden"
@@ -39,33 +62,41 @@ export default function Dashboard() {
         >
           {/* Trust Score */}
           <motion.div variants={cardVariants}>
-            <GlassCard className="flex flex-col items-center" glow glowColor="green">
-              <h3 className="font-display font-semibold text-lg text-violet-950 mb-4 self-start">Trust Score</h3>
+            <GlassCard className="flex flex-col items-center" glow glowColor="green" gradient>
+              <SectionHeader icon={Sparkles} title="Trust Score" subtitle="Live financial health" color="#059669" />
               <TrustScoreGauge score={87} previousScore={82} />
             </GlassCard>
           </motion.div>
 
           {/* Spending Chart */}
           <motion.div variants={cardVariants} className="lg:col-span-2">
-            <GlassCard>
-              <h3 className="font-display font-semibold text-lg text-violet-950 mb-4">Spending Breakdown</h3>
+            <GlassCard gradient>
+              <SectionHeader icon={TrendingUp} title="Spending Breakdown" subtitle="By category this month" color="#7C3AED" />
               <SpendingChart />
             </GlassCard>
           </motion.div>
         </motion.div>
 
-        {/* Bottom grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-          {/* Live Feed */}
-          <GlassCard hover={false} className="min-h-[400px]">
-            <LiveFeed maxItems={6} />
-          </GlassCard>
+        {/* Bottom grid: Feed + AI */}
+        <motion.div
+          variants={containerVariants}
+          initial="hidden"
+          animate="visible"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-6"
+        >
+          <motion.div variants={cardVariants}>
+            <GlassCard hover={false} className="min-h-[400px]">
+              <SectionHeader icon={Zap} title="Live Transaction Feed" subtitle="Real-time updates" color="#F97316" />
+              <LiveFeed maxItems={6} />
+            </GlassCard>
+          </motion.div>
 
-          {/* AI Insights */}
-          <GlassCard hover={false}>
-            <InsightsPanel />
-          </GlassCard>
-        </div>
+          <motion.div variants={cardVariants}>
+            <GlassCard hover={false} gradient>
+              <InsightsPanel />
+            </GlassCard>
+          </motion.div>
+        </motion.div>
       </div>
     </div>
   );
