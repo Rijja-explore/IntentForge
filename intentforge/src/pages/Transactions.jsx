@@ -32,12 +32,12 @@ export default function Transactions() {
         <GlassCard hover={false}>
           <div className="flex items-center gap-3 mb-4">
             <BarChart2 size={20} className="text-trust-electric" />
-            <h3 className="font-display font-semibold text-lg text-white">Weekly Overview</h3>
+            <h3 className="font-display font-semibold text-lg text-violet-950">Weekly Overview</h3>
           </div>
           <ResponsiveContainer width="100%" height={180}>
             <BarChart data={weeklyData} margin={{ top: 0, right: 0, left: -20, bottom: 0 }}>
-              <XAxis dataKey="day" tick={{ fill: 'rgba(255,255,255,0.5)', fontSize: 12 }} axisLine={false} tickLine={false} />
-              <YAxis tick={{ fill: 'rgba(255,255,255,0.3)', fontSize: 11 }} axisLine={false} tickLine={false} />
+              <XAxis dataKey="day" tick={{ fill: '#64748B', fontSize: 12 }} axisLine={false} tickLine={false} />
+              <YAxis tick={{ fill: '#94A3B8', fontSize: 11 }} axisLine={false} tickLine={false} />
               <Tooltip
                 contentStyle={{ background: '#FFFFFF', border: '1px solid rgba(168,85,247,0.2)', borderRadius: '12px' }}
                 labelStyle={{ color: '#1E0A3C' }}
@@ -50,11 +50,11 @@ export default function Transactions() {
           <div className="flex gap-4 mt-2">
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded bg-success-emerald" />
-              <span className="text-xs font-body text-white/50">Approved</span>
+              <span className="text-xs font-body text-slate-500">Approved</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-3 h-3 rounded bg-danger-crimson" />
-              <span className="text-xs font-body text-white/50">Blocked</span>
+              <span className="text-xs font-body text-slate-500">Blocked</span>
             </div>
           </div>
         </GlassCard>
@@ -66,7 +66,7 @@ export default function Transactions() {
 
         {/* History */}
         <GlassCard hover={false}>
-          <h3 className="font-display font-semibold text-lg text-white mb-4">Transaction History</h3>
+          <h3 className="font-display font-semibold text-lg text-violet-950 mb-4">Transaction History</h3>
           <FilterBar onFilter={setFilter} />
           <div className="mt-4 space-y-3">
             {filtered.length === 0 ? (

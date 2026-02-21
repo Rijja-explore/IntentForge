@@ -10,7 +10,7 @@ const settingsGroups = [
   {
     title: 'Security',
     icon: Shield,
-    color: 'trust-electric',
+    hex: '#7C3AED',
     items: [
       { label: 'Two-Factor Authentication', description: 'Add an extra layer of security', value: true },
       { label: 'Biometric Login', description: 'Use fingerprint or face ID', value: false },
@@ -20,7 +20,7 @@ const settingsGroups = [
   {
     title: 'Notifications',
     icon: Bell,
-    color: 'money-gold',
+    hex: '#F97316',
     items: [
       { label: 'Transaction Alerts', description: 'Get notified for every transaction', value: true },
       { label: 'Rule Triggers', description: 'Alerts when a rule is activated', value: true },
@@ -30,7 +30,7 @@ const settingsGroups = [
   {
     title: 'Privacy',
     icon: Lock,
-    color: 'success-emerald',
+    hex: '#059669',
     items: [
       { label: 'Data Analytics', description: 'Help improve AI recommendations', value: true },
       { label: 'Anonymous Mode', description: 'Hide personal details in UI', value: false },
@@ -97,8 +97,8 @@ export default function Settings() {
             <motion.div key={group.title} variants={cardVariants}>
               <GlassCard hover={false}>
                 <div className="flex items-center gap-3 mb-4">
-                  <div className={`p-2 rounded-xl bg-${group.color}/10`}>
-                    <group.icon size={18} className={`text-${group.color}`} />
+                  <div className="p-2 rounded-xl" style={{ background: `${group.hex}15` }}>
+                    <group.icon size={18} style={{ color: group.hex }} />
                   </div>
                   <h3 className="font-display font-semibold text-lg text-violet-950">{group.title}</h3>
                 </div>
@@ -133,8 +133,8 @@ export default function Settings() {
 
         {/* App info */}
         <div className="text-center py-4">
-          <p className="font-mono text-xs text-slate-300">IntentForge v1.0.0</p>
-          <p className="font-body text-xs text-slate-300 mt-1">NXTGEN Hackathon 2025 • Programmable Digital Rupee</p>
+          <p className="font-mono text-xs text-slate-400">IntentForge v1.0.0</p>
+          <p className="font-body text-xs text-slate-400 mt-1">NXTGEN Hackathon 2025 • Programmable Digital Rupee</p>
         </div>
       </div>
     </div>

@@ -57,16 +57,16 @@ export default function AIInsights() {
           className="grid grid-cols-1 sm:grid-cols-3 gap-4"
         >
           {[
-            { label: 'Predicted Savings', value: '₹12,400', icon: TrendingDown, color: 'success-emerald' },
-            { label: 'Risk Alerts', value: '2 Active', icon: ShieldAlert, color: 'danger-crimson' },
-            { label: 'Insights Today', value: '7 New', icon: Lightbulb, color: 'money-gold' },
+            { label: 'Predicted Savings', value: '₹12,400', icon: TrendingDown, hex: '#059669' },
+            { label: 'Risk Alerts', value: '2 Active', icon: ShieldAlert, hex: '#DC2626' },
+            { label: 'Insights Today', value: '7 New', icon: Lightbulb, hex: '#F97316' },
           ].map((stat) => (
             <motion.div key={stat.label} variants={cardVariants}>
-              <GlassCard className={`border-${stat.color}/20`}>
-                <div className={`p-2 rounded-xl bg-${stat.color}/10 w-fit mb-3`}>
-                  <stat.icon size={20} className={`text-${stat.color}`} />
+              <GlassCard style={{ borderColor: `${stat.hex}30` }}>
+                <div className="p-2 rounded-xl w-fit mb-3" style={{ background: `${stat.hex}15` }}>
+                  <stat.icon size={20} style={{ color: stat.hex }} />
                 </div>
-                <p className={`font-mono font-bold text-2xl text-${stat.color}`}>{stat.value}</p>
+                <p className="font-mono font-bold text-2xl" style={{ color: stat.hex }}>{stat.value}</p>
                 <p className="font-body text-sm text-slate-400 mt-1">{stat.label}</p>
               </GlassCard>
             </motion.div>

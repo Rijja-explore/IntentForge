@@ -9,6 +9,7 @@ export default function GlassCard({
   glowColor = 'blue',
   gradient = false,
   onClick,
+  style = {},
 }) {
   const cardRef = useRef(null);
   const x = useMotionValue(0);
@@ -42,7 +43,7 @@ export default function GlassCard({
     <div style={{ perspective: '800px' }} className="w-full">
       <motion.div
         ref={cardRef}
-        style={hover ? { rotateX, rotateY } : {}}
+        style={hover ? { rotateX, rotateY, ...style } : { ...style }}
         onMouseMove={handleMouseMove}
         onMouseLeave={handleMouseLeave}
         whileHover={hover ? {
