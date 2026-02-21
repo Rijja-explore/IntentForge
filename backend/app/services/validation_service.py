@@ -3,7 +3,7 @@ Validation Service
 Real-time transaction validation and policy enforcement
 """
 
-from typing import List
+from typing import List, Optional
 from uuid import UUID
 import time
 
@@ -108,7 +108,15 @@ class ValidationService:
         policy: Policy
     ) -> Optional[str]:
         """
-        Evaluate a single policy against transaction
+        Evaluate a single policy against transaction with deterministic rules
+        
+        This method implements a comprehensive rule engine that checks:
+        - Category restrictions
+        - Amount limits (max_amount)
+        - Per-transaction caps
+        - Expiry validation
+        - GeoFence validation
+        - Merchant whitelist/blacklist
         
         Args:
             transaction: Transaction to evaluate
@@ -119,26 +127,71 @@ class ValidationService:
         """
         rules = policy.rules
         
-        # Category Restriction
-        if policy.policy_type.value == "category_restriction":
-            allowed_categories = rules.get("allowed_categories", [])
-            if transaction.category not in allowed_categories:
-                return f"Category '{transaction.category}' not in allowed list: {allowed_categories}"
+        # 1. EXPIRY VALIDATION (checked first for all policy types)
+        if policy.is_expired():
+            # Expired policies are automatically treated as inactive
+            logger.debug(f"Policy {policy.policy_id} is expired, skipping evaluation")
+            return None
         
-        # Spending Limit
-        elif policy.policy_type.value == "spending_limit":
-            max_amount = rules.get("max_amount", float('inf'))
-            if transaction.amount > max_amount:
-                return f"Amount {transaction.amount} exceeds limit {max_amount}"
+        # 2. CATEGORY MATCH VALIDATION
+        if rules.allowed_categories:
+            if transaction.category not in rules.allowed_categories:
+                return (
+                    f"Policy '{policy.name}': Category '{transaction.category}' "
+                    f"not in allowed list {rules.allowed_categories}"
+                )
         
-        # Transaction Cap
-        elif policy.policy_type.value == "transaction_cap":
-            per_transaction_limit = rules.get("per_transaction_limit", float('inf'))
-            if transaction.amount > per_transaction_limit:
-                return f"Transaction amount {transaction.amount} exceeds cap {per_transaction_limit}"
+        # 3. AMOUNT LIMITS VALIDATION (max_amount - cumulative spending limit)
+        if rules.max_amount is not None:
+            if transaction.amount > rules.max_amount:
+                return (
+                    f"Policy '{policy.name}': Amount {transaction.amount} "
+                    f"exceeds maximum limit {rules.max_amount}"
+                )
         
-        # Add more policy type evaluations as needed
+        # 4. PER-TRANSACTION CAP VALIDATION
+        if rules.per_transaction_cap is not None:
+            if transaction.amount > rules.per_transaction_cap:
+                return (
+                    f"Policy '{policy.name}': Transaction amount {transaction.amount} "
+                    f"exceeds per-transaction cap {rules.per_transaction_cap}"
+                )
         
+        # 5. GEOFENCE VALIDATION
+        if rules.geo_fence:
+            if not transaction.location:
+                return (
+                    f"Policy '{policy.name}': Transaction location required but not provided. "
+                    f"Allowed regions: {rules.geo_fence}"
+                )
+            if transaction.location not in rules.geo_fence:
+                return (
+                    f"Policy '{policy.name}': Location '{transaction.location}' "
+                    f"not in allowed geo-fence {rules.geo_fence}"
+                )
+        
+        # 6. MERCHANT WHITELIST VALIDATION
+        if rules.merchant_whitelist:
+            if not transaction.merchant:
+                return (
+                    f"Policy '{policy.name}': Merchant information required. "
+                    f"Allowed merchants: {rules.merchant_whitelist}"
+                )
+            if transaction.merchant not in rules.merchant_whitelist:
+                return (
+                    f"Policy '{policy.name}': Merchant '{transaction.merchant}' "
+                    f"not in whitelist {rules.merchant_whitelist}"
+                )
+        
+        # 7. MERCHANT BLACKLIST VALIDATION
+        if rules.merchant_blacklist:
+            if transaction.merchant and transaction.merchant in rules.merchant_blacklist:
+                return (
+                    f"Policy '{policy.name}': Merchant '{transaction.merchant}' "
+                    f"is blacklisted"
+                )
+        
+        # All checks passed
         return None
     
     def _generate_reasoning(
@@ -161,16 +214,21 @@ class ValidationService:
             Reasoning string
         """
         if status == TransactionStatus.APPROVED:
+            location_info = f" at location {transaction.location}" if transaction.location else ""
+            merchant_info = f" with merchant '{transaction.merchant}'" if transaction.merchant else ""
+            
             return (
-                f"Transaction approved. Amount {transaction.amount} {transaction.currency} "
-                f"for category '{transaction.category}' complies with all {policies_count} "
-                f"active policies. No violations detected."
+                f"✅ APPROVED: Transaction of {transaction.amount} INR "
+                f"for category '{transaction.category}'{merchant_info}{location_info} "
+                f"complies with all {policies_count} active policy/policies. "
+                f"All validation checks passed: category match, amount limits, "
+                f"per-transaction caps, expiry, and geo-fence validations."
             )
         else:
-            violations_text = "; ".join(violations)
+            violations_text = " | ".join(violations)
             return (
-                f"Transaction blocked. Evaluated {policies_count} policies. "
-                f"Violations: {violations_text}"
+                f"❌ BLOCKED: Transaction rejected after evaluating {policies_count} policy/policies. "
+                f"Violation(s) detected: {violations_text}"
             )
 
 

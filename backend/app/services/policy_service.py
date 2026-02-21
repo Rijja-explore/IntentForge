@@ -86,6 +86,18 @@ class PolicyService:
         )
     
     @log_execution_time(logger)
+    async def get_wallet_policies(self, wallet_id: UUID) -> List[Policy]:
+        """
+        Retrieve policies attached to a specific wallet
+        """
+        return [
+            policy for policy in self.policies.values()
+            if wallet_id in policy.attached_wallets
+            and policy.is_active
+            and not policy.is_expired()
+        ]
+
+    @log_execution_time(logger)
     async def get_policy(self, policy_id: UUID) -> Policy:
         """
         Retrieve policy by ID
