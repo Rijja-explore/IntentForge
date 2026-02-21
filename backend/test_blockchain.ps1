@@ -75,8 +75,8 @@ Write-Host "Created Transaction: $txId" -ForegroundColor Green
 $clawback = @{
     transaction_id = $txId
     wallet_id = $walletId
-    reason = "POLICY_VIOLATION"
-    amount = 1000.0
+    reason = "policy_violation"
+    force = $false
 } | ConvertTo-Json
 
 $clawbackResult = Invoke-RestMethod -Uri "$baseUrl/clawback/execute" -Method Post -Body $clawback -ContentType "application/json"

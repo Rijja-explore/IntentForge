@@ -119,22 +119,16 @@ class ExplanationGeneratorService:
         ]
         
         # Detailed violation explanations
+        # Note: violations are strings, not objects
         for i, violation in enumerate(result.violations, 1):
             explanation_parts.append(f"")
-            explanation_parts.append(f"  {i}. {violation.rule_type.replace('_', ' ').title()}")
-            explanation_parts.append(f"     Policy: {violation.policy_name}")
-            explanation_parts.append(f"     Reason: {violation.message}")
-            
-            # Add specific guidance based on violation type
-            guidance = self._get_violation_guidance(violation.rule_type, transaction)
-            if guidance:
-                explanation_parts.append(f"     Guidance: {guidance}")
+            explanation_parts.append(f"  {i}. {violation}")
         
         explanation_parts.extend([
             f"",
             f"Policy Analysis:",
             f"  • Total Policies Evaluated: {len(policies)}",
-            f"  • Policies Violated: {len(set(v.policy_name for v in result.violations))}",
+            f"  • Unique Policies Violated: {len(set(result.violations))}",
             f"  • Validation Time: {result.processing_time_ms:.2f}ms",
             f"",
             f"Recommendation: Transaction rejected - address violations to proceed"
@@ -154,15 +148,15 @@ class ExplanationGeneratorService:
         rules = policy.rules
         
         if policy_type == "category_restriction":
-            categories = rules.get("allowed_categories", [])
+            categories = rules.allowed_categories or []
             return f"Category '{transaction.get('category')}' is allowed (permitted: {', '.join(categories)})"
         
         elif policy_type == "spending_limit":
-            max_amount = rules.get("max_amount", 0)
+            max_amount = rules.max_amount or 0
             return f"Amount ₹{transaction.get('amount')} is within limit (max: ₹{max_amount})"
         
         elif policy_type == "geo_restriction":
-            allowed_regions = rules.get("geo_fence", [])
+            allowed_regions = rules.geo_fence or []
             return f"Location {transaction.get('location')} is permitted (allowed: {', '.join(allowed_regions)})"
         
         return f"Policy '{policy.name}' requirements satisfied"
@@ -194,30 +188,30 @@ class ExplanationGeneratorService:
         
         rules = policy.rules
         
-        if rules.get("allowed_categories"):
-            categories = ", ".join(rules["allowed_categories"])
+        if rules.allowed_categories:
+            categories = ", ".join(rules.allowed_categories)
             explanation_parts.append(f"  • Only allows spending in: {categories}")
         
-        if rules.get("max_amount"):
-            explanation_parts.append(f"  • Maximum total amount: ₹{rules['max_amount']}")
+        if rules.max_amount:
+            explanation_parts.append(f"  • Maximum total amount: ₹{rules.max_amount}")
         
-        if rules.get("per_transaction_cap"):
-            explanation_parts.append(f"  • Per-transaction limit: ₹{rules['per_transaction_cap']}")
+        if rules.per_transaction_cap:
+            explanation_parts.append(f"  • Per-transaction limit: ₹{rules.per_transaction_cap}")
         
-        if rules.get("geo_fence"):
-            regions = ", ".join(rules["geo_fence"])
+        if rules.geo_fence:
+            regions = ", ".join(rules.geo_fence)
             explanation_parts.append(f"  • Allowed regions: {regions}")
         
-        if rules.get("merchant_whitelist"):
-            merchants = ", ".join(rules["merchant_whitelist"])
+        if rules.merchant_whitelist:
+            merchants = ", ".join(rules.merchant_whitelist)
             explanation_parts.append(f"  • Only approved merchants: {merchants}")
         
-        if rules.get("merchant_blacklist"):
-            merchants = ", ".join(rules["merchant_blacklist"])
+        if rules.merchant_blacklist:
+            merchants = ", ".join(rules.merchant_blacklist)
             explanation_parts.append(f"  • Blocked merchants: {merchants}")
         
-        if rules.get("expiry"):
-            explanation_parts.append(f"  • Expires on: {rules['expiry']}")
+        if rules.expiry:
+            explanation_parts.append(f"  • Expires on: {rules.expiry}")
         
         if policy.description:
             explanation_parts.extend([

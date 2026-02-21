@@ -162,18 +162,26 @@ class AIService:
     def _generate_interpretation(self, policy_type: str, rules: Dict[str, Any]) -> str:
         """
         Generate human-readable interpretation of parsed intent
+        Note: rules parameter should be a dict (not PolicyRules Pydantic model)
         """
+        # Defensive: handle both dict and Pydantic model objects
+        def safe_get(obj, key, default=None):
+            if hasattr(obj, key):  # Pydantic model
+                return getattr(obj, key, default)
+            else:  # dict
+                return obj.get(key, default) if isinstance(obj, dict) else default
+        
         if policy_type == "category_restriction":
-            categories = rules.get("allowed_categories", [])
-            return f"Restrict spending to categories: {', '.join(categories)}"
+            categories = safe_get(rules, "allowed_categories", [])
+            return f"Restrict spending to categories: {', '.join(categories or [])}"
         
         elif policy_type == "spending_limit":
-            amount = rules.get("max_amount", 0)
-            period = rules.get("period", "monthly")
+            amount = safe_get(rules, "max_amount", 0)
+            period = safe_get(rules, "period", "monthly")
             return f"Set {period} spending limit to {amount} INR"
         
         elif policy_type == "transaction_cap":
-            limit = rules.get("per_transaction_limit", 0)
+            limit = safe_get(rules, "per_transaction_limit", 0)
             return f"Limit each transaction to maximum {limit} INR"
         
         return "Policy interpretation"
