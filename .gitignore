@@ -1,19 +1,31 @@
-rmdir /S /Q "D:\IntentForge\intentforge\frontend"# Dependencies
+# Dependencies
 node_modules/
 package-lock.json
 yarn.lock
+
+# Environment — keep only examples
+.env
+.env.*
+!.env.example
 
 # Hardhat
 cache/
 artifacts/
 typechain-types/
 
-# Environment
-.env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+# Build
+dist/
+build/
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+.pytest_cache/
 
 # IDE
 .vscode/
@@ -25,9 +37,13 @@ typechain-types/
 .DS_Store
 Thumbs.db
 
+# Windows — Git Bash creates a literal file called "nul" when scripts use
+# "2>nul" redirection (Git Bash treats it as a filename, not NUL device)
+nul
+
 # Logs
-logs/
 *.log
+logs/
 npm-debug.log*
 yarn-debug.log*
 
@@ -35,20 +51,12 @@ yarn-debug.log*
 coverage/
 coverage.json
 
-# Build
-dist/
-build/
-
-# Python
-.venv
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-*.egg-info/
-.pytest_cache/
-
-# Temp files (Claude Code)
+# Temp files
 tmpclaude-*
 
-nul
+# Large dataset files
+intentforge/backend/dataset/*.csv
+backend/dataset/*.csv
+
+# Stray files
+"package (2).json"

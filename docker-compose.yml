@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: intentforge-frontend
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env
+    environment:
+      - REACT_APP_API_BASE_URL=http://localhost:8000/api/v1
+      - REACT_APP_BLOCKCHAIN_API_URL=http://localhost:3001/api/v1/blockchain
+    depends_on:
+      - backend
+      - blockchain
+    networks:
+      - intentforge-net
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: intentforge-backend
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./backend/.env
+    volumes:
+      - ./backend:/app
+    networks:
+      - intentforge-net
+
+  blockchain:
+    build:
+      context: ./blockchain
+      dockerfile: Dockerfile
+    container_name: intentforge-blockchain
+    ports:
+      - "3001:3001"
+      - "8545:8545"
+    env_file:
+      - ./blockchain/.env
+    volumes:
+      - ./blockchain:/app
+    networks:
+      - intentforge-net
+
+networks:
+  intentforge-net:
+    driver: bridge

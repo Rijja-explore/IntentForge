@@ -1,0 +1,17 @@
+{
+  "roc_auc": 0.9978,
+  "avg_precision": 0.662,
+  "class_0_precision": 0.9998,
+  "class_0_recall": 0.9991,
+  "class_0_f1": 0.9995,
+  "class_1_precision": 0.3833,
+  "class_1_recall": 0.7931,
+  "class_1_f1": 0.5169,
+  "class_macro_avg_precision": 0.6916,
+  "class_macro_avg_recall": 0.8961,
+  "class_macro_avg_f1": 0.7582,
+  "class_weighted_avg_precision": 0.9994,
+  "class_weighted_avg_recall": 0.9989,
+  "class_weighted_avg_f1": 0.9991,
+  "note": "Evaluated post-load on 40k test samples from PaySim"
+}
