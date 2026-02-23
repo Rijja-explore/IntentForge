@@ -23,7 +23,7 @@ class IntentParseRequest(BaseModel):
     user_input: str = Field(
         ...,
         description="Natural language description of spending policy",
-        min_length=10,
+        min_length=3,
         max_length=1000,
         example="I want to spend only on education and books, maximum 10000 rupees per month in Delhi"
     )

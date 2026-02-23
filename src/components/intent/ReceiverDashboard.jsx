@@ -13,15 +13,19 @@ import RuleCard from './RuleCard';
 import { getRulesForReceiver } from '../../services/contractService';
 
 export default function ReceiverDashboard({ account, onBalanceRefresh }) {
-  const [rules,   setRules]   = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [rules,    setRules]   = useState([]);
+  const [loading,  setLoading] = useState(false);
+  const [fetchErr, setFetchErr] = useState(null);
 
   const fetchRules = useCallback(async () => {
     if (!account) return;
     setLoading(true);
+    setFetchErr(null);
     try {
       const all = await getRulesForReceiver(account);
       setRules(all);
+    } catch (err) {
+      setFetchErr(err.message || 'Failed to load rules');
     } finally {
       setLoading(false);
     }
@@ -123,6 +127,19 @@ export default function ReceiverDashboard({ account, onBalanceRefresh }) {
 
         {loading && rules.length === 0 ? (
           <div className="text-center py-12 text-slate-500 text-sm">Loading rules…</div>
+        ) : fetchErr ? (
+          <motion.div
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex items-start gap-3 p-4 rounded-xl"
+            style={{ background: 'rgba(248,113,113,0.08)', border: '1px solid rgba(248,113,113,0.3)' }}
+          >
+            <AlertTriangle size={15} style={{ color: '#F87171' }} className="mt-0.5 flex-shrink-0" />
+            <div>
+              <p className="text-xs font-semibold" style={{ color: '#F87171' }}>Could not load rules</p>
+              <p className="text-xs text-slate-500 mt-0.5">{fetchErr}</p>
+            </div>
+          </motion.div>
         ) : rules.length === 0 ? (
           <div
             className="text-center py-12 rounded-2xl"

@@ -213,6 +213,11 @@ export async function claimIntent(ruleId) {
 export async function getUserRules(address) {
   if (!address) return [];
   try {
+    const provider = getReadProvider();
+    const code = await provider.getCode(INTENT_FORGE_ADDRESS);
+    if (code === '0x') {
+      throw new Error('Contract not deployed — redeploy with: cd blockchain && npx hardhat run scripts/deploy-intent.js --network localhost');
+    }
     const contract = getContractReadOnly();
     const ruleIds  = await contract.getUserRules(address);
 
@@ -238,7 +243,7 @@ export async function getUserRules(address) {
     return rules;
   } catch (err) {
     console.error('getUserRules error:', err);
-    return [];
+    throw new Error('Could not load rules — make sure the Hardhat node is running and the contract is deployed.');
   }
 }
 
@@ -257,40 +262,19 @@ export async function getLockedBalance() {
 // ─── READ: Rules for Receiver (via events) ───────────────────────
 
 /**
- * Returns all rules addressed to a specific receiver by scanning
- * IntentCreated events. More reliable than getUserRules() since the
- * contract may only store rules keyed by sender.
+ * Returns all rules addressed to a specific receiver.
+ * Uses the same getUserRules() contract call (which the contract stores
+ * for both sender AND receiver) and filters client-side.
+ * Avoids queryFilter / eth_getLogs which can silently fail via MetaMask.
  */
 export async function getRulesForReceiver(receiverAddress) {
   if (!receiverAddress) return [];
   try {
-    const contract = getContractReadOnly();
-    const filter   = contract.filters.IntentCreated(null, null, receiverAddress);
-    const logs     = await contract.queryFilter(filter);
-
-    const rules = await Promise.all(
-      logs.map(async (log) => {
-        const ruleId = String(log.args[0]);
-        const [sender, receiver, amount, expiry, active] = await contract.getRule(ruleId);
-        const status = await contract.getRuleStatus(ruleId);
-        return {
-          ruleId,
-          sender,
-          receiver,
-          amount:     ethers.formatEther(amount),
-          amountWei:  amount.toString(),
-          expiry:     Number(expiry),
-          expiryDate: new Date(Number(expiry) * 1000).toLocaleString(),
-          active,
-          status,
-        };
-      })
-    );
-
-    return rules;
+    const all = await getUserRules(receiverAddress);
+    return all.filter((r) => r.receiver?.toLowerCase() === receiverAddress.toLowerCase());
   } catch (err) {
     console.error('getRulesForReceiver error:', err);
-    return [];
+    throw new Error('Could not load rules — make sure the Hardhat node is running and the contract is deployed.');
   }
 }
 

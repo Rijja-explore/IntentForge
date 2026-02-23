@@ -19,6 +19,7 @@ import {
   getLockedBalance,
   ensureCorrectNetwork,
   subscribeToEvents,
+  getReadProvider,
 } from '../services/contractService';
 import { INTENT_FORGE_ADDRESS } from '../config/contracts';
 
@@ -44,8 +45,13 @@ export function useWeb3() {
 
   // ── Check contract deployment ───────────────────────────────────
   const checkContract = useCallback(async () => {
-    const deployed = INTENT_FORGE_ADDRESS !== '0x0000000000000000000000000000000000000000';
-    setIsContractDeployed(deployed);
+    try {
+      const provider = getReadProvider();
+      const code = await provider.getCode(INTENT_FORGE_ADDRESS);
+      setIsContractDeployed(code !== '0x');
+    } catch {
+      setIsContractDeployed(false);
+    }
   }, []);
 
   // ── Update account state ────────────────────────────────────────

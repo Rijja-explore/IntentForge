@@ -20,12 +20,15 @@ api.interceptors.response.use(
     return data;
   },
   (error) => {
+    const detail = error.response?.data?.detail;
     const message =
-      error.response?.data?.detail ||
+      (typeof detail === 'string' ? detail : null) ||
       error.response?.data?.message ||
       error.message ||
       'Request failed';
-    return Promise.reject(new Error(message));
+    const err = new Error(message);
+    err.status = error.response?.status;
+    return Promise.reject(err);
   }
 );
 

@@ -17,14 +17,21 @@ const DEMO_WALLET = {
   attached_policies: [],
 };
 
+/* ── UUID format guard ───────────────────────────────────────────── */
+const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
 /** Retrieve or create the demo wallet; caches ID in localStorage */
 export async function getOrCreateDemoWallet() {
   const cached = localStorage.getItem(DEMO_WALLET_STORAGE_KEY);
-  if (cached) {
+
+  // Evict any stale / non-UUID value (e.g. "demo-wallet-..." from old sessions)
+  if (cached && !UUID_RE.test(cached)) {
+    localStorage.removeItem(DEMO_WALLET_STORAGE_KEY);
+  } else if (cached) {
     try {
       return await getWallet(cached);
     } catch {
-      // Wallet may have been dropped (server restart) — create a fresh one
+      // Wallet dropped on server restart — create a fresh one
       localStorage.removeItem(DEMO_WALLET_STORAGE_KEY);
     }
   }
@@ -54,11 +61,8 @@ export async function createWallet(payload) {
 
 export async function getWallet(walletId) {
   if (!walletId) return DEMO_WALLET;
-  try {
-    return await api.get(`/wallet/${walletId}`);
-  } catch {
-    return DEMO_WALLET;
-  }
+  // Let errors propagate so callers (e.g. getOrCreateDemoWallet) can clear stale cache
+  return await api.get(`/wallet/${walletId}`);
 }
 
 export async function getWalletBalance(walletId) {

@@ -6,6 +6,19 @@ import { parseIntent } from '../../services/aiService';
 import { createPolicy } from '../../services/policyService';
 import { DEMO_WALLET_STORAGE_KEY } from '../../config/api';
 
+// Detect whether a message looks like a spending intent vs a general question
+function looksLikeIntent(text) {
+  const t = text.toLowerCase();
+  const intentKeywords = [
+    'limit', 'cap', 'spend', 'budget', 'allow', 'block', 'restrict',
+    'only', 'maximum', 'minimum', 'rupees', 'inr', '₹', 'per month',
+    'per day', 'per week', 'lock', 'fund', 'intent', 'rule', 'policy',
+    'create', 'set up', 'enable', 'disable', 'protect', 'prevent',
+    'gambling', 'gaming', 'food', 'education', 'category',
+  ];
+  return intentKeywords.some((kw) => t.includes(kw));
+}
+
 // Context-aware offline fallback — no random nonsense
 function getOfflineFallback(text) {
   const t = text.toLowerCase();
@@ -88,8 +101,23 @@ export default function ChatPanel({ isOpen, onClose, onPolicyDeploy }) {
 
   const sendMessage = async (text) => {
     if (!text.trim()) return;
+
+    // Guard: too short
+    if (text.trim().length < 3) {
+      setMessages(m => [...m, { role: 'user', text }, { role: 'assistant', text: 'Please type at least a few words.' }]);
+      setInput('');
+      return;
+    }
+
     setMessages(m => [...m, { role: 'user', text }]);
     setInput('');
+
+    // General questions go straight to the offline fallback — no API call
+    if (!looksLikeIntent(text)) {
+      setMessages(m => [...m, { role: 'assistant', text: getOfflineFallback(text), offline: false }]);
+      return;
+    }
+
     setTyping(true);
 
     try {
@@ -110,12 +138,15 @@ export default function ChatPanel({ isOpen, onClose, onPolicyDeploy }) {
         }
       }
       setMessages(m => [...m, { role: 'assistant', text: reply, policy: policy || null, confidence: pct }]);
-    } catch {
+    } catch (err) {
       setTyping(false);
+      const isOffline = !err.status;
       setMessages(m => [...m, {
         role: 'assistant',
-        text: getOfflineFallback(text),
-        offline: true,
+        text: isOffline
+          ? getOfflineFallback(text)
+          : (err.message && !err.message.startsWith('[') ? err.message : 'Could not parse that intent — try rephrasing.'),
+        offline: isOffline,
       }]);
     }
   };
